@@ -1,0 +1,20 @@
+<% include ../partials/header %>
+
+<div class="row">
+    <h1 style="text-align:center;">Ajouter une réponse pour : <%= produit.name %></h1>
+    <div style="width: 30%; margin: 20px auto;">
+        <form action="/messages/<%= message._id %>/replies" method="POST">
+            <div class="form-group">
+                <textarea class="form-control" type="text" name="reply[text]" placeholder="text"></textarea>
+            </div>
+            <div class="form-group">
+                <button class="btn-lg btn-primary btn-block">Valider</button>
+            </div>
+        </form>
+        <a href="/produits">Retour aux produits</a>
+    </div>
+</div>
+
+
+
+<% include ../partials/footer %>

@@ -1,0 +1,641 @@
+<% include ../partials/header %>
+
+<div class="row">
+    <div class="col-md-3">
+        <p class="lead"><i class="fas fa-home"></i> PRODUITS </p>
+        <div class="list-group">
+            <li class="list-group-item">Contact: <a href="/users/profile/<%=produit.author.id%>"><%=produit.author.username %></a></li>
+            <li class="list-group-item">E-mail: <a><%=produit.author.email %></a></li>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="thumbnail">
+
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox">
+                    <div class="item active fixed-height">
+                        <img src="<%= produit.image[0] %>" alt="image 1">
+                        <div class="carousel-caption">
+                        </div>
+                    </div>
+                    <div class="item fixed-height">
+                        <img src="<%= produit.image[1] %>" alt="image 2">
+                        <div class="carousel-caption">
+                        </div>
+                    </div>
+                    <div class="item fixed-height">
+                        <img src="<%= produit.image[2] %>" alt="image 3">
+                        <div class="carousel-caption">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+
+            <div class="caption">
+                <h4 class="pull-right"><a>IMEI : </a> <%= produit.imei %></h4>
+                <h4><a> Intitulé : </a></h4>
+                <h4><%= produit.name%></h4>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#produitLikes">
+                        <span>Le total des J'aime: <i class="fas fa-thumbs-up"></i> <%= produit.likes.length %></span>
+                    </button>
+                </div>
+                <div style="padding-bottom: 10px;">
+                    <form action="/produits/<%= produit._id %>/like" method="POST">
+                        <div class="btn-group">
+                            <% if (currentUser && produit.likes.some(function (like) {
+                                    return like.equals(currentUser._id)
+                                })) { %>
+                            <button class="btn btn-sm btn-primary">
+                                <i class="fas fa-thumbs-up"></i> Aimé (<%= produit.likes.length %>)
+                            </button>
+                            <% } else { %>
+                            <button class="btn btn-sm btn-secondary">
+                                <i class="fas fa-thumbs-up"></i> J'aime (<%= produit.likes.length %>)
+                            </button>
+                            <% } %>
+
+                            <button type="button" class="btn btn-sm btn-default" data-toggle="modal"
+                                data-target="#produitLikes">Voir plus de détails
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+                <h4 style="color:#73b313">Date de disponibilité</h4>
+                <p><%=produit.availability.toISOString().substr(0, 10)%></p>
+                <h4 style="color:darkblue">Type de produit</h4>
+                <p><%=produit.type.name %></p>
+                <h4 style="color:darkblue">Modèle de produit</h4>
+                <p><%=produit.modele.name %></p>
+                <h4 style="color:darkblue">Statut de traitement</h4>
+                <p><%= produit.status %></p>
+                <h4 style="color:darkblue">Description</h4>
+                <p><%= produit.description%></p>
+                <p><em>Publié par: <a href="/users/profile/<%= produit.author.id %>"><%= produit.author.username %></a>,
+                        <%= moment(produit.createdAt).fromNow() %></em></p>
+                <% if((typeof (currentUser) !="undefined")) {%>
+                <% if((currentUser.role ==="admin") || (currentUser.role ==="agent" )){ %>
+
+                    <a class="btn btn-warning" href="/produits/<%= produit._id%>/edit">Editer <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                    <form id="inline" method="POST" action="/produits/<%= produit._id%>?_method=DELETE">
+                        <button class="btn btn-danger">Supprimer <span class="glyphicon glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    </form>
+                <% } %>
+                <% } %>
+            </div>
+        </div>
+
+
+        <div class="thumbnail">
+            <div class="caption-full">
+
+
+                <h4> Liste des analyses perçues : </h4>
+
+                <!-- Edition -->
+
+                <a class="btn btn-success" data-toggle="collapse" href="#collapseExample2<%=produit._id%>" role="button" aria-expanded="false" aria-controls="collapseExample2<%=produit._id%>"> Dérouler <span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                </a>
+                <br>
+                <p></p>
+                <div class="collapse" id="collapseExample2<%=produit._id%>">
+
+                    <!-- Recherche -->
+                    <p>
+                    <form action="/produits/<%=produit._id%>" method="GET" class="form-inline">
+
+                        <div class="form-group">
+                            <label for="date_begin"> De : </label>
+                            <input class="form-control" type="date" id="date_begin" name="date_begin">
+                            <label for="date_begin"> A : </label>
+                            <input class="form-control" type="date" id="date_end" name="date_end">
+                        </div>
+                        <input type="submit" name="search" value="Chercher" class="btn btn-default col-sm-pull-left">
+                    </form>
+                    </p>
+                    <a href="/produits/<%=produit._id%>#ancre" class="btn btn-warning" ><span class="glyphicon glyphicon glyphicon-refresh" aria-hidden="true"></span></a>
+                    <ol>
+
+                        <% campagnes.forEach(function(campagne){ %>
+                        <li>
+                            <h4>Date : <%=campagne.createdAt.toISOString().substr(0, 10)%> </h4>
+                            <select>
+                                <option> IMEI : (<%=campagne.produit.id%>) - Intitulé : (<%=campagne.name%>)</option>
+                            </select><br>
+                            <p></p>
+                            <a href="/campagnes/<%= campagne._id %>" class="btn btn-xs btn-success"> Consulter <span class="glyphicon glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                            <a href="/campagnes/<%= campagne._id %>/edit" class="btn btn-xs btn-warning"> Mettre à jour <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                            <p></p>
+                            <h5>Liste des campagnes/symptômes découverts : </h5>
+                            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample2<%= campagne._id %><%=produit._id%>" role="button" aria-expanded="false" aria-controls="collapseExample2<%= campagne._id %><%=produit._id%>"> Dérouler <span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                            </a>
+                            <br>
+                            <p></p>
+                            <div id="ancre"></div>
+                            <div class="collapse" id="collapseExample2<%= campagne._id %><%=produit._id%>">
+                                <ol>
+                                    <% campagne.symptomes.forEach(function(symptome){ %>
+                                    <li>
+                                        <select>
+                                            <option> Intitulé : (<%=symptome.name%>)</option>
+                                        </select><br>
+                                        <p></p>
+                                        <a href="/symptomes/<%= symptome._id %>" class="btn btn-xs btn-success"> Consulter <span class="glyphicon glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                                        <a href="/symptomes/<%= symptome._id %>/edit" class="btn btn-xs btn-warning"> Mettre à jour <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                                        <p></p>
+                                    </li>
+                                    <%});%>
+                                </ol>
+                            </div>
+                        </li>
+                        <%});%>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="thumbnail">
+        <div class="caption-full">
+
+            <h4> Tous les symptômes : </h4>
+
+            <a class="btn btn-success" data-toggle="collapse" href="#collapseExample<%=produit._id%>" role="button" aria-expanded="false" aria-controls="collapseExample<%=produit._id%>"> Dérouler <span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+            </a>
+            <br>
+            <p></p>
+            <div class="collapse" id="collapseExample<%= produit._id %>">
+                <ol>
+                <% symptomes.forEach(function(symptome){ %>
+                        <li>
+                            <select>
+                                <option> Intitulé : <%=symptome.name%></option>
+                            </select><br>
+                            <p></p>
+                            <a href="/symptomes/<%=symptome._id %>" class="btn btn-xs btn-success"> Consulter <span class="glyphicon glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                            <a href="/symptomes/<%=symptome._id %>/edit" class="btn btn-xs btn-warning"> Mettre à jour <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                            <p></p>
+                        </li>
+                <% }); %>
+              </ol>
+            </div>
+
+        </div>
+        </div>
+
+
+        <!-- Review section -->
+        <div class="thumbnail">
+            <div class="caption-full">
+                <% if (produit.rating === 0) { %>
+                <h5>
+                    <em>Pas d'évaluations encore !.</em>
+                </h5>
+                <% } else { %>
+                <p>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star <% if (produit.rating > 1.5) { %> checked <% } %>"></span>
+                    <span class="fa fa-star <% if (produit.rating > 2.5) { %> checked <% } %>"></span>
+                    <span class="fa fa-star <% if (produit.rating > 3.5) { %> checked <% } %>"></span>
+                    <span class="fa fa-star <% if (produit.rating > 4.5) { %> checked <% } %>"></span>
+                    <em>(total reviews: <%= produit.reviews.length %>)</em>
+                </p>
+                <p>
+                    L'évaluation de ce produit : <strong><%= produit.rating.toFixed(2) %></strong>
+                </p>
+                <p>
+                    <h4>Dernières évaluations pour ce produit :</h4>
+                </p>
+                <hr style="margin-top: 0;">
+                <% var produit;
+                produit.reviews.slice(0, 5).forEach(function(review){ %>
+                <div class="row">
+                    <div class="col-md-3">
+                        <%- '<span class="fa fa-star checked"></span>'.repeat(review.rating) %><%- '<span class="fa fa-star"></span>'.repeat(5 - review.rating) %>
+                        <div>Evalué par : <strong><%= review.author.username %></strong></div>
+                        <span><em><%= review.updatedAt.toDateString() %></em></span>
+                    </div>
+                    <div class="col-md-9">
+                        <p style="text-align: justify; word-wrap: break-word;">
+                            <%= review.text %>
+                        </p>
+                        <% if(currentUser && review.author.id.equals(currentUser._id)){ %>
+                        <a class="btn btn-xs btn-warning"
+                            href="/produits/<%=produit._id %>/reviews/<%=review._id %>/edit">Edit</a>
+                        <form id="inline" action="/produits/<%=produit._id %>/reviews/<%=review._id %>?_method=DELETE"
+                            method="POST">
+                            <input type="submit" class="btn btn-xs btn-danger" value="Delete">
+                        </form>
+                        <% } %>
+                    </div>
+                </div>
+                <hr>
+                <% }); %>
+                <div style="margin-bottom: 10px;">
+                    <h4><a href="/produits/<%= produit._id %>/reviews"><i class="fa fa-search" aria-hidden="true"></i> Voir toutes les évaluations </a></h4>
+                </div>
+                <% } %>
+
+                <div>
+
+                    <a class="btn btn-primary <% if (currentUser && produit.reviews.some(function (review) {return review.author.id.equals(currentUser._id)})) { %> disabled <% } %>"
+                        href="/produits/<%= produit._id %>/reviews/new">
+                        Ecrire une nouvelle évaluation </a>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <!-- Start Comment Section -->
+
+        <div class="well">
+            <!--Setting up the add new comment button that is used for collapsing-->
+            <div class="text-right">
+                <!-- <p> <a class="btn btn-success" href="/produits/<%= produit._id%>/comments/new">Add new comment</a>
+                </p> -->
+                <a class="btn btn-success pull-right" role="button" data-toggle="collapse" href="#collapseComment"
+                    aria-expanded="false" aria-controls="collapseComment">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ajouter un nouveau commentaire </a>
+            </div>
+            <!--Comment section title-->
+            <h4><strong>Commentaires <span class="glyphicon glyphicon glyphicon-comment" aria-hidden="true"></span></strong>
+            </h4>
+
+            <!--Collapse Add a comment form START-->
+            <div class="collapse" id="collapseComment">
+                <div class="well" style="border-left: 5px solid #00C851;">
+                    <% if(!currentUser) { %>
+                    <!--If the user is not logged in, direct him to the login page-->
+                    <h5>Vous devez être connecté d'abord pour pouvoir laisser un commentaire. <a href="/login">Cliquez ici</a> pour se connecter
+                        page.</h5>
+                    <% } %>
+                    <% if(currentUser) { %>
+                    <!--If the user is logged in, show the new comment form-->
+                    <h4>Ecrivez votre commentaire <span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </h4>
+                    <form id="add-comment-form" action="/produits/<%= produit._id %>/comments" method="POST">
+                        <div class="form-group">
+                            <input class="form-control" type="text" disabled value="<%= currentUser.username %>">
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" name="comment[text]" placeholder="Ecrire le commentaire..."
+                                form="add-comment-form" rows="5" cols="70"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success btn-sm">Commenter <span class="glyphicon glyphicon-comment"
+                                    aria-hidden="true"></span></button>
+                        </div>
+                    </form>
+                    <% } %>
+                </div>
+            </div>
+
+            <!--Collapse Add a comment form END -->
+
+            <hr>
+
+            <!--Che45ck if there are comments, if there are none say no comments.-->
+            <% if (produit.comments.length === 0) { %>
+            <em style="color: grey;">Pas de commentaires encore.</em>
+            <% } %>
+
+            <!--Display comments by looping through them-->
+            <% produit.comments.forEach(function(comment) { %>
+            <div class="row">
+                <div class="col-md-12">
+                    <strong>
+                        <% if (currentUser && currentUser._id.equals(comment.author.id)) { %>
+                        <!--If the current user owns the comment, change the color of the user icon-->
+                        <span style="color: orange;" class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        <% } else { %>
+                        <!--Else just display it black-->
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        <% } %>
+                        <!--Print out the author username-->
+                        <%= comment.author.username %>
+                    </strong>
+                    <!--Show when the comment was made-->
+                    <span class="pull-right"><%= moment(comment.createdAt).fromNow() %></span>
+                    <!--Printing the comment-->
+                    <p><%= comment.text %></p>
+                    <!--If the visitor is logged in and the owner of the comment, show the edit and delete buttons-->
+                    <% if (currentUser && currentUser._id.equals(comment.author.id)) { %>
+                    <!--Edit button used for collapsing the edit comment form-->
+                    <a class="btn btn-xs btn-warning" role="button" data-toggle="collapse"
+                        href="#collapseEdit<%= comment._id %>" aria-expanded="false"
+                        aria-controls="collapse<%= comment._id %>">
+                        Editer</a>
+                    <!--Delete comment button-->
+                    <form id="inline" action="/produits/<%= produit._id %>/comments/<%= comment._id %>?_method=DELETE"
+                        method="POST" style="display: inline;">
+                        <button class="btn btn-xs btn-danger">Supprimer</button>
+                    </form>
+                    <!--Edit comment form-->
+                    <div class="collapse" id="collapseEdit<%= comment._id %>">
+                        <div class="well" style="border-left: 5px solid #ffbb33; margin-top: 15px;">
+                            <h4>Editer votre commentaire <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></h4>
+                            <form id="edit-comment-form<%= comment._id %>"
+                                action="/produits/<%= produit._id %>/comments/<%= comment._id %>?_method=PUT" method="POST">
+                                <div class="form-group">
+                                    <input class="form-control" type="text" disabled
+                                        value="<%= currentUser.username %>">
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control" name="comment[text]"
+                                        placeholder="Your comment text..." form="edit-comment-form<%= comment._id %>"
+                                        rows="5" cols="70"><%= comment.text %></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-warning btn-sm">Edition du commentaire <span
+                                            class="glyphicon glyphicon-comment" aria-hidden="true"></span></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <% } %>
+                    <hr>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+
+
+        <!-- Start Message Section -->
+
+        <div class="well">
+            <!--Setting up the add new Message button that is used for collapsing-->
+            <% if(currentUser &&(!(currentUser.role === "admin") || (currentUser.role === "agent" ))) {%>
+            <div class="text-right">
+                <!-- <p><a class="btn btn-success" href="/produits/<%= produit._id%>/messages/new">Add new message</a>
+                </p> -->
+                <a class="btn btn-success pull-right" role="button" data-toggle="collapse" href="#collapseMessage"
+                   aria-expanded="false" aria-controls="collapseMessage">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Envoyer un message </a>
+            </div>
+
+            <!--Message section title-->
+
+            <h4><strong>Messages <span class="glyphicon glyphicon glyphicon-message" aria-hidden="true"></span></strong>
+            </h4>
+            <% } %>
+
+            <!-- Collapse Add a message form START-->
+
+            <div class="collapse" id="collapseMessage">
+                <div class="well" style="border-left: 5px solid #00C851;">
+                    <% if(!currentUser) { %>
+                        <!--If the user is not logged in, direct him to the login page-->
+
+                        <h5>Vous devez être connecté d'abord pour pouvoir envoyer un message. <a href="/login">Cliquez ici</a> pour se connecter
+                            page.</h5>
+                    <% } %>
+                    <% if(currentUser) { %>
+
+                        <!--If the user is logged in, show the new message form-->
+
+                        <h4>Ecrivez votre message  <span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </h4>
+                        <form id="add-message-form" action="/produits/<%= produit._id %>/messages" method="POST">
+                            <div class="form-group">
+                                <input class="form-control" type="text" disabled value="<%= currentUser.username %>">
+                            </div>
+                            <div class="form-group">
+                            <textarea class="form-control" name="message[text]" placeholder="Ecrire le message..."
+                                      form="add-message-form" rows="5" cols="70"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success btn-sm">Envoyer <span class="glyphicon glyphicon-message"
+                                                                                       aria-hidden="true"></span></button>
+                            </div>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+            <hr>
+
+
+            <!-- Start Message Section -->
+
+            <% if((typeof (currentUser) != "undefined")) {%>
+
+            <!--Che45ck if there are messages, if there are none say no messages.-->
+            <% if (produit.messages.length === 0) { %>
+                <em style="color: grey;">Pas de messages encore.</em>
+            <% } %>
+
+            <!-- Display messages by looping through them-->
+            <% produit.messages.forEach(function(message) { %>
+
+
+                    <% if((currentUser.role ==="admin") || (currentUser.role ==="agent" ) || (currentUser._id.equals(message.author.id))) {%>
+
+                    <div class="row">
+
+                    <div class="col-md-12">
+                        <strong>
+                            <% if (currentUser && currentUser._id.equals(message.author.id)) { %>
+                                <!--If the current user owns the message, change the color of the user icon-->
+                                <span style="color: orange;" class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            <% } else { %>
+                                <!--Else just display it black-->
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            <% } %>
+                            <!--Print out the author username-->
+                            <%= message.author.username %>
+                        </strong>
+                        <!--Show when the message was made-->
+                        <span class="pull-right"><%= moment(message.createdAt).fromNow() %></span>
+                        <!--Printing the message-->
+                        <p><%= message.text %></p>
+
+                        <!-- Start message Section -->
+                        <% if((currentUser.role==="admin") || (currentUser.role ==="agent" )) {%>
+
+                            <!--Setting up the add new Message Reply button that is used for collapsing-->
+                            <% if (! currentUser._id.equals(message.author.id)) { %>
+                            <div class="text-right">
+                                <!-- <p><a class="btn btn-success" href="/produits/<%= produit._id%>/messages/new">Add new message</a> </p> -->
+                                <a class="btn btn-success pull-right" role="button" data-toggle="collapse" href="#collapseMessage"
+                                   aria-expanded="false" aria-controls="collapseMessage">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Répondre </a>
+                            </div>
+                            <h4>Réponses</h4>
+
+                                <!--Collapse Add a message reply form START-->
+
+                                <div class="collapse" id="collapseMessageReply">
+                                    <div class="well" style="border-left: 5px solid #00C851;">
+                                        <% if(!currentUser) { %>
+                                            <!--If the user is not logged in, direct him to the login page-->
+                                            <h5>Vous devez être connecté d'abord pour pouvoir envoyer un message. <a href="/login">Cliquez ici</a> pour se connecter
+                                                page.</h5>
+                                        <% } %>
+                                        <% if(currentUser) { %>
+
+                                            <!--If the user is logged in (admin or agent), show the new message reply form-->
+                                            <h4>Ecrivez votre message  <span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                            </h4>
+                                            <form id="add-message-reply-form" action="/produits/<%= produit._id %>/messages/<%= message._id %>/replies" method="POST">
+                                                <div class="form-group">
+                                                    <input class="form-control" type="text" disabled value="<%= currentUser.username %>">
+                                                </div>
+                                                <div class="form-group">
+                                            <textarea class="form-control" name="reply[text]" placeholder="Ecrire la réponse..." form="add-message-form" rows="5" cols="70"></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button class="btn btn-success btn-sm">Répondre <span class="glyphicon glyphicon-message"
+                                                                                                          aria-hidden="true"></span></button>
+                                                </div>
+                                            </form>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <% message.replies.forEach(function(reply) { %>
+                                <strong>
+                                    <% if (currentUser && currentUser._id.equals(message.author.id)) { %>
+                                        <!--If the current user owns the message, change the color of the user icon-->
+                                        <span style="color: orange;" class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                    <% } else { %>
+                                        <!--Else just display it black-->
+                                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                    <% } %>
+                                    <!--Print out the author username-->
+                                    <%= currentUser.username %>
+                                </strong>
+                                <!--Show when the message was made-->
+                                <span class="pull-right"><%= moment(reply.createdAt).fromNow() %></span>
+                                <!--Printing the message-->
+                                <p><%= reply.text %></p>
+
+                                <% }) %>
+                              <% } %>
+                             <% } %>
+
+
+                        <!-- If the visitor is logged in and the owner of the message, show the edit and delete buttons -->
+
+                        <% if (currentUser && currentUser._id.equals(message.author.id)) { %>
+                            <!--Edit button used for collapsing the edit message form-->
+                            <a class="btn btn-xs btn-warning" role="button" data-toggle="collapse"
+                               href="#collapseEdit<%= message._id %>" aria-expanded="false"
+                               aria-controls="collapse<%= message._id %>">
+
+                                Editer</a>
+
+                            <!--Delete message button-->
+
+                            <form id="inline" action="/produits/<%= produit._id %>/messages/<%= message._id %>?_method=DELETE"
+                                  method="POST" style="display: inline;">
+
+                                <button class="btn btn-xs btn-danger">Supprimer</button>
+
+                            </form>
+
+                            <!--Edit message form-->
+
+                            <div class="collapse" id="collapseEdit<%= message._id %>">
+                                <div class="well" style="border-left: 5px solid #ffbb33; margin-top: 15px;">
+                                    <h4>Editez votre message <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></h4>
+                                    <form id="edit-message-form<%= message._id %>"
+                                          action="/produits/<%= produit._id %>/messages/<%= message._id %>?_method=PUT" method="POST">
+                                        <div class="form-group">
+                                            <input class="form-control" type="text" disabled
+                                                   value="<%= currentUser.username %>">
+                                        </div>
+                                        <div class="form-group">
+                                    <textarea class="form-control" name="message[text]"
+                                              placeholder="Votre message est..." form="edit-message-form<%= message._id %>"
+                                              rows="5" cols="70"><%= message.text %></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-warning btn-sm">Edition du message <span
+                                                        class="glyphicon glyphicon-message" aria-hidden="true"></span></button>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+                        <% } %>
+
+                        <hr>
+
+                    </div>
+
+                </div>
+                 <% }%>
+                <% }); %>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- House Likes Modal -->
+
+<div id="produitLikes" class="modal fade" role="dialog">
+
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content" >
+
+            <div class="modal-header" >
+                <button type="button" class="close" data-dismiss="modal" >&times;</button>
+                <h4 class="modal-title">Tous les j'aimes du produit: <%= produit.likes.length %></h4>
+            </div>
+
+            <div class="modal-body">
+
+                <table class="table table-striped" >
+                    <thead>
+                        <tr>
+                            <th>Aimé par: </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% produit.likes.forEach(function(like) { %>
+                        <tr>
+                            <td><span class="badge"><i class="fas fa-user"></i></span> <%= like.username %></td>
+                        </tr>
+                        <% }); %>
+                        <% if (produit.likes.length === 0) { %>
+                        <tr>
+                            <td><em>Pas de j'aimes encore .</em></td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer" >
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<% include ../partials/footer %>

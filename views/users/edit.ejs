@@ -1,0 +1,60 @@
+<% include ../partials/header %>
+
+<div class="row">
+    <h1 style="text-align:center;">Edition de l'utilisateur: <%= user.username%></h1>
+    <div style="width: 30%; margin: 20px auto;">
+        <form action="/users/<%=user._id%>/?_method=PUT" method="POST" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label for="avatar">Avatar</label>
+                <input class="form-control" type="file" id="avatar" name="avatar" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <input class="form-control" type="text" value="<%=user.username%>" name="username"  required>
+
+            </div>
+
+            <div class="form-group">
+                <label for="firstname">Prénom</label>
+                <input class="form-control" type="text" value="<%=user.firstname%>" name="firstname"  required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastname">Nom</label>
+                <input class="form-control" type="text" value="<%=user.lastname%>" name="lastname"  required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input class="form-control" type="password" value="<%=user.password%>" name="password"  required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input class="form-control" type="email" value="<%=user.email%>" name="email"  required>
+            </div>
+
+            <div class="form-group">
+                <label for="publication">Rôle</label>
+                <div class="form-check-inline">
+                    <label for="publication">Utilisateur</label>
+                    <input class="form-check-input" type="radio" name="role" checked="" value="utilisateur">
+                    <label for="publication">Agent</label>
+                    <input class="form-check-input" type="radio" name="role" value="agent">
+                    <label for="publication">Admin</label>
+                    <input class="form-check-input" type="radio" name="role" value="admin">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <button class="btn-lg btn-primary btn-block">Valider</button>
+            </div>
+        </form>
+        <a href="/users">Retour aux utilisateurs</a>
+    </div>
+</div>
+
+<% include ../partials/footer %>

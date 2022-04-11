@@ -1,0 +1,230 @@
+<% include ../partials/header %>
+
+<div class="row">
+    <div class="col-md-3">
+        <p class="lead"><i class="fas fa-home"></i> TYPES DE PRODUITS </p>
+        <div class="list-group">
+            <li class="list-group-item">Contact: <a
+                        href="/users/profile/<%= type.author.id %>"><%= type.author.username %></a></li>
+            <li class="list-group-item">E-mail: <a><%= type.author.email %></a></li>
+        </div>
+    </div>
+
+        <div class="col-md-9">
+            <div class="thumbnail">
+
+                <div class="caption">
+                    <h4>Intitulé : <br>
+                        <a> <%= type.name%> </a> </h4>
+                    <hr>
+                    <h4 style="color:darkblue">Description</h4>
+                    <p><%= type.description %></p>
+                    <p><em>Publié par: <a href="/users/profile/<%= type.author.id %>"><%= type.author.username %></a>,
+                            <%= moment(type.createdAt).fromNow() %></em></p>
+                    <% if((typeof (currentUser) !="undefined")) {%>
+                        <% if((currentUser.role ==="admin") || (currentUser.role ==="agent" )){%>
+                            <a class="btn btn-warning" href="/types/<%= type._id %>/edit">Editer <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                            <form id="inline" method="POST" action="/types/<%=type._id%>?_method=DELETE">
+                                <button class="btn btn-danger">Supprimer <span class="glyphicon glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            </form>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Start Message Section -->
+            <div class="well">
+                <!--Setting up the add new Message button that is used for collapsing-->
+                <% if(currentUser &&(!(currentUser.role === "admin") || (currentUser.role === "agent" ))) {%>
+                    <div class="text-right">
+                        <!-- <p><a class="btn btn-success" href="/types/<%= type._id%>/messages/new">Add new message</a>
+                </p> -->
+                        <a class="btn btn-success pull-right" role="button" data-toggle="collapse" href="#collapseMessage"
+                           aria-expanded="false" aria-controls="collapseMessage">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Envoyer un message </a>
+                    </div>
+
+                    <!--Message section title-->
+                    <h4><strong>Messages <span class="glyphicon glyphicon glyphicon-message" aria-hidden="true"></span></strong>
+                    </h4>
+                <% } %>
+
+                <!--Collapse Add a message form START-->
+                <div class="collapse" id="collapseMessage">
+                    <div class="well" style="border-left: 5px solid #00C851;">
+                        <% if(!currentUser) { %>
+                            <!--If the user is not logged in, direct him to the login page-->
+                            <h5>Vous devez être connecté d'abord pour pouvoir envoyer un message. <a href="/login">Cliquez ici</a> pour se connecter
+                                page.</h5>
+                        <% } %>
+                        <% if(currentUser) { %>
+
+                            <!--If the user is logged in, show the new message form-->
+                            <h4>Ecrivez votre message  <span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            </h4>
+                            <form id="add-message-form" action="/types/<%= type._id %>/messages" method="POST">
+                                <div class="form-group">
+                                    <input class="form-control" type="text" disabled value="<%= currentUser.username %>">
+                                </div>
+                                <div class="form-group">
+                            <textarea class="form-control" name="message[text]" placeholder="Ecrire le message..."
+                                      form="add-message-form" rows="5" cols="70"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-success btn-sm">Envoyer <span class="glyphicon glyphicon-message"
+                                                                                         aria-hidden="true"></span></button>
+                                </div>
+                            </form>
+                        <% } %>
+                    </div>
+                </div>
+                <hr>
+
+
+                <!-- Start Message Section -->
+                <% if((typeof (currentUser) != "undefined")) {%>
+
+                    <!--Che45ck if there are messages, if there are none say no messages.-->
+                    <% if (type.messages.length === 0) { %>
+                        <em style="color: grey;">Pas de messages encore.</em>
+                    <% } %>
+
+                    <!-- Display messages by looping through them-->
+                    <% type.messages.forEach(function(message) { %>
+
+
+                        <% if((currentUser.role ==="admin") || (currentUser.role ==="agent" ) || (currentUser._id.equals(message.author.id))) {%>
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <strong>
+                                        <% if (currentUser && currentUser._id.equals(message.author.id)) { %>
+                                            <!--If the current user owns the message, change the color of the user icon-->
+                                            <span style="color: orange;" class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                        <% } else { %>
+                                            <!--Else just display it black-->
+                                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                        <% } %>
+                                        <!--Print out the author username-->
+                                        <%= message.author.username %>
+                                    </strong>
+                                    <!--Show when the message was made-->
+                                    <span class="pull-right"><%= moment(message.createdAt).fromNow() %></span>
+                                    <!--Printing the message-->
+                                    <p><%= message.text %></p>
+
+                                    <!-- Start message Section -->
+                                    <% if((currentUser.role==="admin") || (currentUser.role ==="agent" )) {%>
+
+                                        <!--Setting up the add new Message Reply button that is used for collapsing-->
+                                        <% if (! currentUser._id.equals(message.author.id)) { %>
+                                            <div class="text-right">
+                                                <!-- <p><a class="btn btn-success" href="/types/<%= type._id%>/messages/new">Add new message</a> </p> -->
+                                                <a class="btn btn-success pull-right" role="button" data-toggle="collapse" href="#collapseMessage"
+                                                   aria-expanded="false" aria-controls="collapseMessage">
+                                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Répondre </a>
+                                            </div>
+                                            <h4>Réponses</h4>
+
+                                            <!--Collapse Add a message reply form START-->
+
+                                            <div class="collapse" id="collapseMessageReply">
+                                                <div class="well" style="border-left: 5px solid #00C851;">
+                                                    <% if(!currentUser) { %>
+                                                        <!--If the user is not logged in, direct him to the login page-->
+                                                        <h5>Vous devez être connecté d'abord pour pouvoir envoyer un message. <a href="/login">Cliquez ici</a> pour se connecter
+                                                            page.</h5>
+                                                    <% } %>
+                                                    <% if(currentUser) { %>
+
+                                                        <!--If the user is logged in (admin or agent), show the new message reply form-->
+                                                        <h4>Ecrivez votre message  <span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                                        </h4>
+                                                        <form id="add-message-reply-form" action="/types/<%= type._id %>/messages/<%= message._id %>/replies" method="POST">
+                                                            <div class="form-group">
+                                                                <input class="form-control" type="text" disabled value="<%= currentUser.username %>">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <textarea class="form-control" name="reply[text]" placeholder="Ecrire la réponse..." form="add-message-form" rows="5" cols="70"></textarea>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <button class="btn btn-success btn-sm">Répondre <span class="glyphicon glyphicon-message"
+                                                                                                                      aria-hidden="true"></span></button>
+                                                            </div>
+                                                        </form>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                            <% message.replies.forEach(function(reply) { %>
+                                                <strong>
+                                                    <% if (currentUser && currentUser._id.equals(message.author.id)) { %>
+                                                        <!--If the current user owns the message, change the color of the user icon-->
+                                                        <span style="color: orange;" class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                                    <% } else { %>
+                                                        <!--Else just display it black-->
+                                                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                                    <% } %>
+                                                    <!--Print out the author username-->
+                                                    <%= currentUser.username %>
+                                                </strong>
+                                                <!--Show when the message was made-->
+                                                <span class="pull-right"><%= moment(reply.createdAt).fromNow() %></span>
+                                                <!--Printing the message-->
+                                                <p><%= reply.text %></p>
+
+                                            <% }) %>
+                                        <% } %>
+                                    <% } %>
+
+
+                                    <!--If the visitor is logged in and the owner of the message, show the edit and delete buttons-->
+                                    <% if (currentUser && currentUser._id.equals(message.author.id)) { %>
+                                        <!--Edit button used for collapsing the edit message form-->
+                                        <a class="btn btn-xs btn-warning" role="button" data-toggle="collapse"
+                                           href="#collapseEdit<%= message._id %>" aria-expanded="false"
+                                           aria-controls="collapse<%= message._id %>">
+                                            Editer</a>
+                                        <!--Delete message button-->
+                                        <form id="inline" action="/types/<%= type._id %>/messages/<%= message._id %>?_method=DELETE"
+                                              method="POST" style="display: inline;">
+                                            <button class="btn btn-xs btn-danger">Supprimer</button>
+                                        </form>
+                                        <!--Edit message form-->
+                                        <div class="collapse" id="collapseEdit<%= message._id %>">
+                                            <div class="well" style="border-left: 5px solid #ffbb33; margin-top: 15px;">
+                                                <h4>Editez votre message <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></h4>
+                                                <form id="edit-message-form<%= message._id %>"
+                                                      action="/types/<%= type._id %>/messages/<%= message._id %>?_method=PUT" method="POST">
+                                                    <div class="form-group">
+                                                        <input class="form-control" type="text" disabled
+                                                               value="<%= currentUser.username %>">
+                                                    </div>
+                                                    <div class="form-group">
+                                    <textarea class="form-control" name="message[text]"
+                                              placeholder="Votre message est..." form="edit-message-form<%= message._id %>"
+                                              rows="5" cols="70"><%= message.text %></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button class="btn btn-warning btn-sm">Edition du message <span
+                                                                    class="glyphicon glyphicon-message" aria-hidden="true"></span></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    <% } %>
+
+                                    <hr>
+
+                                </div>
+
+                            </div>
+                        <% }%>
+                    <% }); %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>

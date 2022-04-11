@@ -1,0 +1,78 @@
+<% include ../partials/header %>
+
+<div class="row">
+  <h1 style="text-align:center;"> Ajouter un nouveau produit </h1>
+  <div style="width: 30%; margin: 20px auto;">
+    <form action="/produits" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="imei">IMEI</label>
+        <input class="form-control" type="number" name="produit[imei]" placeholder="IMEI" required>
+      </div>
+      <div class="form-group">
+        <label for="name">Intitulé</label>
+        <input class="form-control" type="text" name="produit[name]" placeholder="Intitulé" required>
+      </div>
+      <div class="form-group">
+        <label for="type">Type du produit</label>
+        <select class="form-control" type="text" data-style="btn-info" name="type" required>
+          <optgroup>
+            <% types.forEach(function(type){ %>
+            <option value="<%=type._id%>" name="option" > Intitulé : (<%=type.name%>) </option>
+            <% }); %>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="modele">Modèle du produit</label>
+        <select class="form-control" type="text" data-style="btn-info" name="modele" required>
+          <optgroup>
+            <% modeles.forEach(function(modele){ %>
+            <option value="<%=modele._id%>" name="option" > Intitulé : (<%=modele.name%>) </option>
+            <% }); %>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="status">Statut de traitement</label>
+        <div class="form-check-inline">
+          <label for="status">Non traité</label>
+          <input class="form-check-input" type="radio" name="produit[status]" value="Non traité" checked="">
+          <label for="status">En traitement</label>
+          <input class="form-check-input" type="radio" name="produit[status]" value="En traitement">
+          <label for="status">Traité</label>
+          <input class="form-check-input" type="radio" name="produit[status]" value="Traité">
+
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="publication">Statut de publication</label>
+        <div class="form-check-inline">
+          <label for="publication">  Publié </label>
+          <input class="form-check-input" type="radio" name="produit[publication]" checked="" value="Publié">
+          <label for="publication">  Non Publié  </label>
+          <input class="form-check-input" type="radio" name="produit[publication]" value="Non Publié">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Date de disponibilité</label>
+        <input class="form-control" type="date" id="location" name="produit[availability]" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" type="text" name="produit[description]"
+                  placeholder="Description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="image">Images</label>
+        <input class="form-control" draggable="true" type="file" id="image" name="image" multiple accept="image/*" required>
+      </div>
+      <div class="form-group">
+        <button class="btn-lg btn-primary btn-block">Valider</button>
+      </div>
+    </form>
+    <a href="/produits">Retour aux produits</a>
+  </div>
+</div>
+
+<% include ../partials/footer %>

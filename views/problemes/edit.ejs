@@ -1,0 +1,79 @@
+<% include ../partials/header %>
+
+<div class="row">
+    <h1 style="text-align:center;"> Edition du problème </h1>
+    <h3 style="text-align:center;"><a> Intitulé : </a> <%=probleme.name%></h3>
+    <div style="width: 30%; margin: 20px auto;">
+        <form id="edit" action="/problemes/<%=probleme._id%>" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Intitulé</label>
+                <input class="form-control" type="text"  name="name" value="<%=probleme.name%>" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" type="text" name="description"><%=probleme.description%></textarea>
+            </div>
+            <label for="name">Liste des plans de tests affectés à ce problème : </label>
+            <br>
+            <!-- Edition -->
+            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"> Dérouler <span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+            </a>
+            <br>
+            <p></p>
+            <div class="collapse" id="collapseExample">
+                <ol>
+                    <% probleme.plants.forEach(function(plant){ %>
+                    <li>
+                        <select>
+                            <option> Intitulé : (<%=plant.name%>)</option>
+                        </select><br>
+                        <p></p>
+                        <a href="/plants/<%= plant._id %>" class="btn btn-xs btn-success"> Consulter <span class="glyphicon glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                        <a href="/plants/<%= plant._id %>/edit" class="btn btn-xs btn-warning"> Mettre à jour <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                        <p></p>
+                    </li>
+                    <% }); %>
+                </ol>
+            </div>
+            <!-- Fin mise à jour-->
+            <!-- Ajout de plans de tests -->
+            <label for="name">Ajouter des plans de tests existants</label>
+            <br>
+            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">Dérouler<span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+            </a>
+            <br>
+            <p></p>
+            <div class="collapse" id="collapseExample2">
+                <% let tab = []; %>
+                <% probleme.plants.forEach(function(plt){ %>
+                    <% tab.push(plt._id.toString()); %>
+                <% });%>
+
+                <select class="select" multiple data-mdb-placeholder="Example placeholder"   name="plants" multiple>
+                    <optgroup>
+                        <% plants.forEach(function(plant){ %>
+                            <% if(tab.includes(plant._id.toString())){ %>
+                            <option value="<%=plant._id%>" name="option" selected> Intitulé : (<%=plant.name%>)</option>
+                            <% }else{ %>
+                            <option value="<%=plant._id%>" name="option" > Intitulé : (<%=plant.name%>)</option>
+                            <% } %>
+
+                        <% }); %>
+                    </optgroup>
+                </select>
+
+            </div>
+            <p></p>
+            <label for="name">Plan de tests non-existants ?, ajouter un nouveau plan de tests</label>
+            <p></p>
+            <a href="/plants/new" class="btn btn-success"> Ajouter un nouveau plan de tests <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            <p></p>
+            <div class="form-group">
+                <button class="btn btn-warning btn-block" type="submit" form="edit"> Mise à jour <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+            </div>
+        </form>
+        <a href="/problemes">Retour aux problèmes</a>
+    </div>
+</div>
+
+<% include ../partials/footer %>

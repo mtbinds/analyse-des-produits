@@ -1,0 +1,46 @@
+<% include ../partials/header %>
+
+<div class="row">
+    <h1 style="text-align:center;">Ajouter un nouveau problème</h1>
+    <div style="width: 30%; margin: 20px auto;">
+        <form action="/problemes" method="POST" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label for="name">Intitulé</label>
+                <input class="form-control" type="text" name="probleme[name]" placeholder="Nom" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" type="text" name="probleme[description]"
+                          placeholder="Description"></textarea>
+            </div>
+
+            <!-- Ajout des problèmes  -->
+            <label for="name"> Ajouter des plans de tests existants </label><br>
+            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">Dérouler<span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+            </a>
+            <br>
+            <p></p>
+            <div class="collapse" id="collapseExample2">
+                <select class="form-control" type="text" data-style="btn-info" name="plants" multiple>
+                    <optgroup>
+                        <% plants.forEach(function(plant){ %>
+                        <option value="<%=plant._id%>" name="option" > Intitulé : (<%=plant.name%>) </option>
+                        <% }); %>
+                    </optgroup>
+                </select>
+            </div>
+            <p></p>
+            <label for="name">Plan de tests non-existant ?, ajouter un nouveau plan de tests</label>
+            <p></p>
+            <a href="/plants/new" class="btn btn-success"> Ajouter un nouveau plan de tests <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            <p></p>
+            <div class="form-group">
+                <button class="btn-lg btn-primary btn-block">Valider</button>
+            </div>
+        </form>
+        <a href="/problemes">Retour aux problèmes</a>
+    </div>
+</div>
+
+<% include ../partials/footer %>

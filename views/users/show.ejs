@@ -1,0 +1,162 @@
+<% include ../partials/header %>
+
+<div class="container p-3 my-3 border">
+    <h1>
+    <img style="" src="<%= user.avatar %>" class="img-circle" alt="Cinque Terre" width="250" height="236">
+        <%= user.username%>
+        <div class="btn" ><a type="button" class="btn btn-primary btn-lg" href="/users/<%= user._id %>/edit"> Modifier les informations du profile</a> </div>
+    </h1>
+
+
+</div>
+
+<div class="container p-3 my-3 border">
+<h3>Liste de vos produits </h3>
+</div>
+
+<div class="container p-3 my-3 bg-primary text-white">
+
+
+    <div class="row text-center" style="display:flex; flex-wrap: wrap">
+
+        <% produits.forEach(produit => { %>
+            <% if ((produit.publication === "Publiée")) { %>
+
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="thumbnail">
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                          <!-- Indicators -->
+                          <ol class="carousel-indicators">
+                            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                           </ol>
+
+                            <!-- Wrapper for slides -->
+                             <div class="carousel-inner" role="listbox">
+                              <div class="item active fixed-height">
+                                <img src="<%= produit.image[0] %>" alt="image 1">
+                                <div class="carousel-caption">
+                                </div>
+                              </div>
+                              <div class="item fixed-height">
+                                <img src="<%= produit.image[1] %>" alt="image 2">
+                                <div class="carousel-caption">
+                                </div>
+                              </div>
+                              <div class="item fixed-height">
+                                  <img src="<%= produit.image[2] %>" alt="image 3">
+                                  <div class="carousel-caption">
+                                  </div>
+                              </div>
+                          </div>
+
+                          <!-- Controls -->
+                          <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                          </a>
+                          <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                          </a>
+                        </div>
+                        <div class="caption">
+                            <h4>
+                                <%= produit.name %>
+                            </h4>
+                            <!-- Produit Like Rating -->
+                            <div>
+                    <span class="badge label-primary"><i class="fas fa-thumbs-up"></i>
+                        <%= produit.likes.length %></span>
+                            </div>
+                            <!-- Produit Star Rating -->
+                            <% if (produit.rating === 0) { %>
+                                <p></p>
+                                <h4>Pas d'évaluations encore.</h4>
+                            <% } else { %>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star <% if (produit.rating > 1.5) { %> checked <% } %>"></span>
+                                <span class="fa fa-star <% if (produit.rating > 2.5) { %> checked <% } %>"></span>
+                                <span class="fa fa-star <% if (produit.rating > 3.5) { %> checked <% } %>"></span>
+                                <span class="fa fa-star <% if (produit.rating > 4.5) { %> checked <% } %>"></span>
+                            <% } %>
+
+                            <h4><h4 style="color: midnightblue; font-family: bold">Le type de bien: </h4><%= produit.type%></h4>
+                            <p> </p>
+                            <h4><h4 style="color: midnightblue; font-family: bold">Le statut du bien: </h4><%= produit.status%></h4>
+
+                        </div>
+
+                        <p>
+                            <a href="/produits/<%= produit._id %>" class="btn btn-primary">Plus d'infos</a>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+            <% } %>
+        <% }); %>
+
+        <% if((typeof (currentUser) !="undefined")) {%>
+            <% if((currentUser.role ==="admin") || (currentUser.role ==="agent" )) {%>
+
+                <% produits.forEach(produit => { %>
+                    <% if ((produit.publication === "Non Publiée")) { %>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <div class="thumbnail">
+                                <img src="<%= produit.image %>">
+                                <div class="caption">
+                                    <h4>
+                                        <%= produit.name %>
+                                    </h4>
+                                    <!-- Produit Like Rating -->
+                                    <div>
+                    <span class="badge label-primary"><i class="fas fa-thumbs-up"></i>
+                        <%= produit.likes.length %></span>
+                                    </div>
+                                    <!-- Produit Star Rating -->
+                                    <% if (produit.rating === 0) { %>
+                                        <p></p>
+                                        <h4>Pas d'évaluations encore.</h4>
+                                    <% } else { %>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star <% if (produit.rating > 1.5) { %> checked <% } %>"></span>
+                                        <span class="fa fa-star <% if (produit.rating > 2.5) { %> checked <% } %>"></span>
+                                        <span class="fa fa-star <% if (produit.rating > 3.5) { %> checked <% } %>"></span>
+                                        <span class="fa fa-star <% if (produit.rating > 4.5) { %> checked <% } %>"></span>
+                                    <% } %>
+                                    <h4><h4 style="color: #e36c56; font-family: bold">La publication de l'produit: </h4><%= produit.publication%></h4>
+                                    <h4><h4 style="color: #54cf27; font-family: bold">Le nombre de messages reçus: </h4><%= produit.messages.length%></h4>
+                                    <h4><h4 style="color: midnightblue; font-family: bold">Le type du bien: </h4><%= produit.type%></h4>
+                                    <h4><h4 style="color: midnightblue; font-family: bold">Le statut du bien: </h4><%= produit.status%></h4>
+
+                                </div>
+
+                                <p>
+                                    <a href="/produits/<%= produit._id %>" class="btn btn-primary">Historique de l'produit</a>
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    <% } %>
+
+                <% }); %>
+
+            <% } %>
+        <% } %>
+
+
+    </div>
+
+</div>
+
+
+<% include ../partials/footer %>

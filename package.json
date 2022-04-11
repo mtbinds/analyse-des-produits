@@ -1,0 +1,46 @@
+{
+  "name": "Produits",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Madjid Taoualit",
+  "license": "Free",
+  "dependencies": {
+    "async": "^3.1.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cloudinary": "^1.14.0",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^8.1.0",
+    "ejs": "^2.6.2",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "express-oas-generator": "^1.0.41",
+    "express-session": "^1.16.2",
+    "google-maps": "^4.3.3",
+    "graphql": "^16.0.1",
+    "graphql-iso-date": "^3.6.1",
+    "lodash": "^4.17.21",
+    "mapbox": "^1.0.0-beta10",
+    "mapbox-gl": "^1.2.1",
+    "method-override": "^3.0.0",
+    "moment": "^2.24.0",
+    "mongoose": "^5.6.7",
+    "multer": "^1.4.2",
+    "node-geocoder": "^3.14.0",
+    "nodemailer": "^6.3.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^5.0.1",
+    "swagger-ui-express": "^4.1.6"
+  },
+  "devDependencies": {
+    "bson": "^4.6.2",
+    "express-swagger-generator": "^1.1.17",
+    "jsonwebtoken": "^8.5.1"
+  }
+}
