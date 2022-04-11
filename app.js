@@ -26,7 +26,7 @@ var testRoutes = require("./routes/tests");
 var userRoutes = require("./routes/users");
 var indexRoutes = require("./routes/index");
 
-mongoose.connect("mongodb://127.0.0.1:27017/essai", {
+mongoose.connect("mongodb+srv://madjid:Taoualit2016@cluster0.vydqb.mongodb.net/essai?retryWrites=true&w=majority", {
      useNewUrlParser: true });
 
 app.set('views', __dirname + '/views');
@@ -115,5 +115,3 @@ app.use("/uploads", express.static("uploads"));
 
 // Express listens for requests (Start server)
 app.listen(port, () => console.log(`Site de réparation des produits starting on port ${port}!`))
-
-
