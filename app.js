@@ -26,8 +26,16 @@ var testRoutes = require("./routes/tests");
 var userRoutes = require("./routes/users");
 var indexRoutes = require("./routes/index");
 
-mongoose.connect("mongodb+srv://madjid:Taoualit2016@cluster0.vydqb.mongodb.net/essai?retryWrites=true&w=majority", {
-     useNewUrlParser: true });
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://madjid:Taoualit2016@cluster0.vydqb.mongodb.net/essai?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+client.connect(err => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
+});
+
 
 app.set('views', __dirname + '/views');
 app.set("view engine", "ejs");
