@@ -27,20 +27,13 @@ var userRoutes = require("./routes/users");
 var indexRoutes = require("./routes/index");
 
 /**
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://madjid:Taoualit2016@cluster0.vydqb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
-
+mongoose.connect("mongodb://127.0.0.1:27017/essai", {
+     useNewUrlParser: true });
 **/
 
-
 mongoose.connect("mongodb+srv://madjid:Taoualit2016@cluster0.vydqb.mongodb.net/essai?retryWrites=true&w=majority", {
-     useNewUrlParser: true });
+  useNewUrlParser: true });
+
 
 app.set('views', __dirname + '/views');
 app.set("view engine", "ejs");
@@ -127,4 +120,6 @@ app.use("/tests/:id/messages/:id/replies", replyRoutes);
 app.use("/uploads", express.static("uploads"));
 
 // Express listens for requests (Start server)
-app.listen(port, () => console.log(`Site de réparation des produits starting on port ${port}!`))
+app.listen(port, () => console.log(`Site d'analyse des produits starting on port ${port} !`))
+
+

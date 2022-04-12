@@ -14,7 +14,7 @@
     </div>
     </div>
     <div style="width: 30%; margin: 20px auto;">
-        <form action="/campagnes/<%=campagne._id%>/?_method=PUT" method="POST" enctype="multipart/form-data">
+        <form id="edit" action="/campagnes/<%=campagne._id%>/?_method=PUT" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">Intitulé</label>
                 <input class="form-control" type="text"  name="name" value="<%=campagne.name%>" required>
@@ -96,7 +96,7 @@
             <a href="/symptomes/new" class="btn btn-success"> Ajouter un nouveau symptôme <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span></a>
             <p></p>
             <div class="form-group">
-                <button class="btn-lg btn-primary btn-block">Valider</button>
+                <button class="btn btn-warning btn-block" type="submit" form="edit"> Mise à jour <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></button>
             </div>
         </form>
         <a href="/campagnes">Retour aux Analyses</a>

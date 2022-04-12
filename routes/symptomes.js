@@ -71,7 +71,7 @@ router.get('/', function(req, res) {
     Symptome.find({
       $or: [
         {
-          _id: req.query.search
+          name: req.query.search
         }
       ]
     })

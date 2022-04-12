@@ -4,7 +4,7 @@
     <h1 style="text-align:center;">Edition du modèle de produits</h1>
     <h3 style="text-align:center;"><a> Intitulé : </a> <%=modele.name%></h3>
     <div style="width: 30%; margin: 20px auto;">
-        <form action="/modeles/<%=modele._id%>/?_method=PUT" method="POST" encmodele="multipart/form-data">
+        <form id="edit" action="/modeles/<%=modele._id%>" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">Nom</label>
                 <input class="form-control" type="text"  name="name" value="<%=modele.name%>" required>

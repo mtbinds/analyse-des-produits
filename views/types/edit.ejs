@@ -2,9 +2,9 @@
 
 <div class="row">
     <h1 style="text-align:center;">Edition du type de produits</h1>
-    <h3 style="text-align:center;"><a> Intitulé : </a> <%=type._id%></h3>
+    <h3 style="text-align:center;"><a> Intitulé : </a> <%=type.name%></h3>
     <div style="width: 30%; margin: 20px auto;">
-        <form action="/types/<%=type._id%>/?_method=PUT" method="POST" enctype="multipart/form-data">
+        <form id="edit" action="/types/<%=type._id%>" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name"> Intitulé </label>
                 <input class="form-control" type="text"  name="name" value="<%=type.name%>" required>

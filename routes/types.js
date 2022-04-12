@@ -26,6 +26,7 @@ var imageFilter = function(req, file, cb) {
 };
 
 var cloudinary = require('cloudinary');
+const {ObjectId} = require("bson");
 cloudinary.config({
   cloud_name: 'dajeg1r6h',
   api_key: 152352994553188,
@@ -66,11 +67,10 @@ router.get('/', function(req, res) {
   var pageNumber = pageQuery ? pageQuery : 1;
   if (req.query.search) {
 
-    const regex = new RegExp(escapeRegex(req.query.search), 'gi');
     Type.find({
       $or: [
         {
-          _id: req.query.search
+          name:req.query.search
         }
       ]
     })
@@ -78,7 +78,7 @@ router.get('/', function(req, res) {
       .limit(perPage)
       .exec(function(err, allTypes) {
         Type.count({
-          _id: req.query.search
+          name:req.query.search
         }).exec(function(err, count) {
           if (err) {
             req.flash('error', err.message);
@@ -187,14 +187,13 @@ router.get('/:id/edit', middleware.checkAdminAgent, (req, res) => {
 });
 
 // UPDATE TYPE ROUTE
-router.put('/:id',middleware.checkAdminAgent, upload.array('image',10),
+router.post('/:id',middleware.checkAdminAgent, upload.array('image',10),
   (req, res) => {
 
     var imageUrlList = [];
     var imageIdList = [];
+
     Type.findById(req.params.id, async function(err, type) {
-
-
       if (err) {
         req.flash('error', err.message);
         res.redirect('back');
@@ -221,10 +220,9 @@ router.put('/:id',middleware.checkAdminAgent, upload.array('image',10),
         type.description = req.body.description;
         type.save();
 
-
         // PARTIE DE LA MISE A JOUR DU TYPE DANS PRODUIT
 
-        produit.find({ },async function(err, foundProduits){
+        Produit.find({ },async function(err, foundProduits){
 
           if((typeof (foundProduits) !="undefined")) {
 
@@ -232,14 +230,14 @@ router.put('/:id',middleware.checkAdminAgent, upload.array('image',10),
 
               let ty;
 
-              if( foundProduit.type.id = type._id ){
+              if( foundProduit.type.id == type._id ){
 
                 ty= {
                   id: type._id,
                   name: type.name
                 };
 
-                produit.findOneAndUpdate(
+                Produit.findOneAndUpdate(
                   { _id:ObjectId(foundProduit._id)},
                   { $set: { type: ty }}, {new: true}, (err, doc) => {
                     if (err) {
@@ -252,10 +250,8 @@ router.put('/:id',middleware.checkAdminAgent, upload.array('image',10),
             });
           }
         });
-
         // FIN DE LA PARTIE DE LA MISE A JOUR DU TYPE DANS PRODUIT
-
-        req.flash('success', 'Mise à jour réussie!');
+        req.flash('success', 'Mise à jour réussie !');
         res.redirect('/types');
       }
     });
@@ -278,7 +274,7 @@ router.delete('/:id', middleware.checkAdminAgent, function(req, res) {
           foundProduits.forEach(function(foundProduit){
             let ty = [];
 
-              if( produit.type.id = type._id ){
+              if(foundProduit.type.id == type._id ){
 
                 Produit.findOneAndUpdate(
                   { _id:ObjectId(foundProduit._id)},

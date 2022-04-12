@@ -71,7 +71,7 @@ router.get('/', function(req, res) {
     Test.find({
       $or: [
         {
-          _id: req.query.search
+          name: req.query.search
         }
 
       ]
@@ -80,7 +80,7 @@ router.get('/', function(req, res) {
       .limit(perPage)
       .exec(function(err, allTests) {
         Test.count({
-          _id: req.query.search
+          name: req.query.search
         }).exec(function(err, count) {
           if (err) {
             req.flash('error', err.message);

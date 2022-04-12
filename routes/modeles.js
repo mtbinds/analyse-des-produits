@@ -26,6 +26,7 @@ var imageFilter = function(req, file, cb) {
 };
 
 var cloudinary = require('cloudinary');
+const {ObjectId} = require("bson");
 cloudinary.config({
   cloud_name: 'dajeg1r6h',
   api_key: 152352994553188,
@@ -69,7 +70,7 @@ router.get('/', function(req, res) {
     Modele.find({
       $or: [
         {
-          _id : req.query.search
+          name:req.query.search
         }
 
       ]
@@ -78,7 +79,7 @@ router.get('/', function(req, res) {
       .limit(perPage)
       .exec(function(err, allModeles) {
         Modele.count({
-          _id: req.query.search
+          name:req.query.search
         }).exec(function(err, count) {
           if (err) {
             req.flash('error', err.message);
@@ -187,7 +188,7 @@ router.get('/:id/edit', middleware.checkAdminAgent, (req, res) => {
 });
 
 // UPDATE MODELE ROUTE
-router.put('/:id',middleware.checkAdminAgent, upload.array('image',10),
+router.post('/:id',middleware.checkAdminAgent, upload.array('image',10),
   (req, res) => {
 
     var imageUrlList = [];
@@ -223,7 +224,7 @@ router.put('/:id',middleware.checkAdminAgent, upload.array('image',10),
 
         // PARTIE DE LA MISE A JOUR DU MODELE DANS PRODUIT
 
-        produit.find({ },async function(err, foundProduits){
+        Produit.find({ },async function(err, foundProduits){
 
           if((typeof (foundProduits) !="undefined")) {
 
@@ -231,14 +232,14 @@ router.put('/:id',middleware.checkAdminAgent, upload.array('image',10),
 
               let mod;
 
-              if( foundProduit.modele.id = modele._id ){
+              if( foundProduit.modele.id == modele._id ){
 
                 mod= {
                   id: modele._id,
                   name: modele.name
                 };
 
-                produit.findOneAndUpdate(
+                Produit.findOneAndUpdate(
                   { _id:ObjectId(foundProduit._id)},
                   { $set: { modele: mod }}, {new: true}, (err, doc) => {
                     if (err) {
@@ -277,7 +278,7 @@ router.delete('/:id', middleware.checkAdminAgent, function(req, res) {
           foundProduits.forEach(function(foundProduit){
             let mod = [];
 
-            if( produit.modele.id = modele._id ){
+            if( foundProduit.modele.id == modele._id ){
 
               Produit.findOneAndUpdate(
                 { _id:ObjectId(foundProduit._id)},

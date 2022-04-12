@@ -72,7 +72,7 @@ router.get('/', function(req, res) {
     Probleme.find({
       $or: [
         {
-          _id: req.query.search
+          name: req.query.search
         }
       ]
     })
