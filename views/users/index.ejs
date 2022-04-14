@@ -7,12 +7,12 @@
         <p><a>Gestion des utilisateurs</a></p>
         </div>
         <p>
-            <a class="btn btn-success btn-md pull-right" href="/users/new"> Ajouter un nouvel utilisateur  <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            <a class="btn btn-success btn-md pull-right" href="/users/new"> Ajouter un nouveau utilisateur  <span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span></a>
         </p>
         <p>
         <form action="/users" method="GET" class="form-inline">
             <div class="form-group">
-                <input class="searchbar" type="text" name="search" placeholder="Chercher un utilisateur..."
+                <input class="searchbar" type="text" name="search" placeholder="Chercher par nom d'utilisateur ..."
                        class="form-control">
                 <input type="submit" value="Chercher" class="btn btn-default col-sm-pull-left">
             </div>
@@ -26,43 +26,41 @@
         <div class="col-lg-3 col-md-4 col-sm-6" >
 
             <div class="thumbnail">
-                <img class="img-responsive" src="<%= user.avatar %>">
+                <img style="max-height:250px; min-height:250px;" class="img-responsive" src="<%= user.avatar %>">
                 <h4>
-                    <label>Nom d'utilisateur: </label>
-                    <%= user.username %>
-                </h4>
-
-                <h4>
-                    <label>Prénom: </label>
-                    <%= user.firstname %>
+                    <label>Nom d'utilisateur: </label><br>
+                    <a><%= user.username %></a>
                 </h4>
                 <h4>
-                    <label>Nom: </label>
-                    <%= user.lastname %>
+                    <label>E-mail: </label><br>
+                    <a><%= user.email %></a>
                 </h4>
                 <h4>
-                    <label>E-mail: </label>
-                    <%= user.email %>
+                    <label>Rôle: </label><br>
+                    <a><%= user.role %></a>
                 </h4>
-                <h4>
-                    <label>Rôle: </label>
-                    <%= user.role %>
-                </h4>
+                <h4> Actions </h4>
+                <a class="btn btn-success" data-toggle="collapse" href="#collapseExample2<%=user._id%>" role="button" aria-expanded="false" aria-controls="collapseExample2<%=user.avatar%>"> Dérouler <span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                </a>
+                <br>
+                <p></p>
+                <div class="collapse" id="collapseExample2<%=user._id%>">
 
                 <div class="row text-center">
                     <p>
-                        <a href="/users/profile/<%= user._id %>" class="btn btn-primary">Plus d'infos</a>
+                        <a href="/users/profile/<%=user._id%>" class="btn btn-primary">Plus d'infos</a>
                     </p>
                 </div>
                 <div class="row text-center">
                     <p>
-                        <a class="btn btn-warning" href="/users/<%= user._id %>/edit">Editer</a>
+                        <a class="btn btn-warning" href="/users/<%= user._id %>/edit">Editer <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></a>
                     </p>
                     <p>
-                    <form id="inline" method="POST" action="/users/<%=user._id%>?_method=DELETE">
-                        <button class="btn btn-danger">Supprimer</button>
+                    <form id="inline" method="POST" action="/users/<%= user._id%>?_method=DELETE">
+                        <button class="btn btn-danger">Supprimer <span class="glyphicon glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                     </form>
                     </p>
+                </div>
                 </div>
             </div>
 

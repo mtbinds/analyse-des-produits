@@ -52,37 +52,63 @@ router.get("/register", (req, res) => {
 
 router.post("/register",upload.single('avatar'), (req, res) => {
 
-
+  if(req.file){
   cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
     if (err) {
       req.flash('error', "Téléchargement de l'image est impossible, Réessayez svp.");
       return req.redirect('back');
     }
-
     req.body.avatar = result.secure_url;
     req.body.avatarId = result.public_id;
 
     var newUser = new User({
-        username: req.body.username,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        role : "utilisateur",
-        email: req.body.email,
-        avatar: req.body.avatar,
-        avatarId: req.body.avatarId
+      username: req.body.username,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      role : "utilisateur",
+      email: req.body.email,
+      avatar: req.body.avatar,
+      avatarId: req.body.avatarId
     });
 
     User.register(newUser, req.body.password, (err, user) => {
-        if (err) {
-            req.flash("error", err.message);
-            return res.redirect("/register");
-        }
-        passport.authenticate("local")(req, res, function () {
-            req.flash("success", "Bienvenue à la maquettes des produits " + user.username);
-            res.redirect("/produits");
-        });
+      if (err) {
+        req.flash("error", err.message);
+        return res.redirect("/register");
+      }
+      passport.authenticate("local")(req, res, function () {
+        req.flash("success", "Bienvenue au site d'analyse des produits " + user.username);
+        res.redirect("/produits");
+      });
     });
-});
+  });
+  }else{
+    req.body.avatar = "";
+    req.body.avatarId = "";
+
+    var newUser = new User({
+      username: req.body.username,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      role : "utilisateur",
+      email: req.body.email,
+      avatar: req.body.avatar,
+      avatarId: req.body.avatarId
+    });
+
+    User.register(newUser, req.body.password, (err, user) => {
+      if (err) {
+        req.flash("error", err.message);
+        return res.redirect("/register");
+      }
+      passport.authenticate("local")(req, res, function () {
+        req.flash("success", "Bienvenue au site d'analyse des produits " + user.username);
+        res.redirect("/produits");
+      });
+    });
+  }
+
+
 });
 // LOGIN ROUTES
 

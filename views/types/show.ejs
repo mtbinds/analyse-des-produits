@@ -186,7 +186,7 @@
                                            aria-controls="collapse<%= message._id %>">
                                             Editer</a>
                                         <!--Delete message button-->
-                                        <form id="inline" action="/types/<%= type._id %>/messages/<%= message._id %>?_method=DELETE"
+                                        <form id="inline" action="/types/<%= type._id %>/messages/<%=message._id %>?_method=DELETE"
                                               method="POST" style="display: inline;">
                                             <button class="btn btn-xs btn-danger">Supprimer</button>
                                         </form>

@@ -1,9 +1,10 @@
 <% include ../partials/header %>
 
 <div class="row">
-    <h1 style="text-align:center;">Edition de l'utilisateur: <%= user.username%></h1>
+    <h1 style="text-align:center;">Edition d'utilisateur </h1>
+    <h1 style="text-align:center;">Nom d'utilisateur : <a><%=user.username%></a></h1>
     <div style="width: 30%; margin: 20px auto;">
-        <form action="/users/<%=user._id%>/?_method=PUT" method="POST" enctype="multipart/form-data">
+        <form id="edit" action="/users/<%=user._id%>" method="POST" enctype="multipart/form-data">
 
             <div class="form-group">
                 <label for="avatar">Avatar</label>
@@ -37,20 +38,43 @@
             </div>
 
             <div class="form-group">
-                <label for="publication">Rôle</label>
-                <div class="form-check-inline">
-                    <label for="publication">Utilisateur</label>
-                    <input class="form-check-input" type="radio" name="role" checked="" value="utilisateur">
-                    <label for="publication">Agent</label>
-                    <input class="form-check-input" type="radio" name="role" value="agent">
-                    <label for="publication">Admin</label>
-                    <input class="form-check-input" type="radio" name="role" value="admin">
+                <label for="publication">Rôle</label><br>
+                <a class="btn btn-success btn-xs"  data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2"> Dérouler <span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                 </a>
+                 <br>
+                 <p></p>
+                 <div class="collapse" id="collapseExample2">
+                   <ul>
+                    <li>
+                    <label for="publication">Utilisateur  </label>
+                    <% if(user.role =="utilisateur") {%>
+                        <input class="form-check-input" type="radio" name="role" checked="" value="utilisateur">
+                    <% }else{ %>
+                        <input class="form-check-input" type="radio" name="role" value="utilisateur">
+                    <%}%>
+                    </li>
+                    <li>
+                    <label for="publication">Agent  </label>
+                    <% if(user.role =="agent") {%>
+                        <input class="form-check-input" type="radio" name="role" checked="" value="agent">
+                    <% }else{ %>
+                        <input class="form-check-input" type="radio" name="role" value="agent">
+                    <%}%>
+                    </li>
+                    <li>
+                    <label for="publication">Admin  </label>
+                    <% if(user.role =="admin") {%>
+                        <input class="form-check-input" type="radio" name="role" checked="" value="admin">
+                    <% }else{ %>
+                        <input class="form-check-input" type="radio" name="role" value="admin">
+                    <%}%>
+                    </li>
+                   </ul>
                 </div>
             </div>
-
-
+            <p></p>
             <div class="form-group">
-                <button class="btn-lg btn-primary btn-block">Valider</button>
+                <button class="btn btn-warning btn-block" type="submit" form="edit"> Mise à jour <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></button>
             </div>
         </form>
         <a href="/users">Retour aux utilisateurs</a>

@@ -126,27 +126,29 @@ router.get('/', getCampagnes, function(req, res) {
 					}
 				});
 			});
-	}
+	 }
 });
 
 
-
 // CREATE - Ajouter un nouveau produit à la base de données
-router.post('/', middleware.checkAdminAgent, upload.array("image",10),async (req, res,next)  => {
+router.post('/', middleware.checkAdminAgent, upload.array("image",3),async (req, res,next)  => {
 
   var imageUrlList = [];
   var imageIdList = [];
+
+  if(req.files){
 
   for (var i = 0; i < req.files.length; i++) {
     var locaFilePath = req.files[i].path;
     var result = await uploadToCloudinary(locaFilePath);
     imageUrlList.push(result.url);
     imageIdList.push(result.id);
+   }
 
   }
-
     req.body.produit.image = imageUrlList;
     req.body.produit.imageId = imageIdList;
+
     req.body.produit.author = {
 			id: req.user._id,
 			username: req.user.username,
@@ -339,11 +341,12 @@ router.get('/:id/edit', middleware.checkAdminAgent, getTypes, getModeles, (req, 
 });
 
 // UPDATE PRODUIT ROUTE
-router.put('/:id', middleware.checkAdminAgent, upload.array('image',10),
+router.put('/:id', middleware.checkAdminAgent, upload.array('image',3),
 	(req, res) => {
 
     var imageUrlList = [];
     var imageIdList = [];
+
 		Produit.findById(req.params.id, async function(err, produit) {
 
 			if (err) {
@@ -351,15 +354,14 @@ router.put('/:id', middleware.checkAdminAgent, upload.array('image',10),
 				res.redirect('back');
 			} else {
 
-				if (req.files) {
-					try {
+				if (req.files){
 
+					try {
             for (var i = 0; i < req.files.length; i++) {
               var locaFilePath = req.files[i].path;
               var result = await uploadToCloudinary(locaFilePath);
               imageUrlList.push(result.url);
               imageIdList.push(result.id);
-
             }
 
 					} catch (err) {

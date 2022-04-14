@@ -62,7 +62,7 @@ router.get('/', middleware.checkAdmin ,function(req, res) {
             if (allUsers.length < 1) {
               req.flash(
                 'error',
-                'Aucun utilisateur ne correspond à votre recherche, Réessayez svp.'
+                'Aucun utilisateur correspond à votre recherche, Réessayez svp.'
               );
               return res.redirect('back');
             }
@@ -101,7 +101,8 @@ router.get('/', middleware.checkAdmin ,function(req, res) {
 
 router.post('/', middleware.checkAdmin , upload.single('avatar'), (req, res) => {
 
-  cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
+  if(req.file){
+   cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
     if (err) {
       req.flash('error', "Téléchargement de l'image est impossible, Réessayez svp.");
       return req.redirect('back');
@@ -111,7 +112,31 @@ router.post('/', middleware.checkAdmin , upload.single('avatar'), (req, res) => 
     // add image's public_id to produit object
     req.body.user.avatarId = result.public_id;
 
-    var newUser = new User({
+     const newUser = new User({
+       username: req.body.user.username,
+       firstname: req.body.user.firstname,
+       lastname: req.body.user.lastname,
+       role : req.body.user.role,
+       email: req.body.user.email,
+       avatar: req.body.user.avatar,
+       avatarId: req.body.user.avatarId
+     });
+
+     User.register(newUser, req.body.user.password, (err, user) => {
+       if (err) {
+         req.flash("error", err.message);
+         return res.redirect("/users/new");
+       }
+       res.redirect("/users");
+     });
+
+   });
+  }else{
+
+    req.body.user.avatar = "";
+    req.body.user.avatarId = "";
+
+    const newUser = new User({
       username: req.body.user.username,
       firstname: req.body.user.firstname,
       lastname: req.body.user.lastname,
@@ -128,9 +153,8 @@ router.post('/', middleware.checkAdmin , upload.single('avatar'), (req, res) => 
       }
       res.redirect("/users");
     });
+  }
 
-
-  });
 });
 
 
@@ -150,7 +174,7 @@ router.get('/:id/edit', middleware.checkAdminAgent, (req, res) => {
 });
 
 // UPDATE USER ROUTE
-router.put('/:id', middleware.checkAdmin, upload.single('avatar'), (req, res) => {
+router.post('/:id', middleware.checkAdmin, upload.single('avatar'), (req, res) => {
 
     User.findById(req.params.id, async function(err, user) {
       if (err) {
@@ -159,24 +183,35 @@ router.put('/:id', middleware.checkAdmin, upload.single('avatar'), (req, res) =>
       } else {
         if (req.file) {
           try {
+            if(user.avatarId !=""){
             await cloudinary.v2.uploader.destroy(user.avatarId);
-            var result = await cloudinary.v2.uploader.upload(
+            }
+            const result = await cloudinary.v2.uploader.upload(
               req.file.path
             );
-            user.avatarId = result.public_id;
+            user.username = req.body.username;
+            user.firstname= req.body.firstname;
+            user.lastname= req.body.lastname;
+            user.role= req.body.role;
+            user.password= req.body.password;
+            user.email= req.body.email;
             user.avatar = result.secure_url;
+            user.avatarId = result.public_id;
+            user.save();
           } catch (err) {
             req.flash('error', err.message);
             return res.redirect('back');
           }
+        }else{
+          user.username = req.body.username;
+          user.firstname= req.body.firstname;
+          user.lastname= req.body.lastname;
+          user.role= req.body.role;
+          user.email= req.body.email;
+          user.avatarId = "";
+          user.avatar = "";
+          user.save();
         }
-        user.username = req.body.username;
-        user.firstname= req.body.firstname;
-        user.lastname= req.body.lastname;
-        user.role= req.body.role;
-        user.password= req.body.password;
-        user.email= req.body.email;
-        user.save();
         req.flash('success', 'Mise à jour réussie!');
         res.redirect('/users');
       }
@@ -191,27 +226,13 @@ router.delete('/:id', middleware.checkAdmin, function(req, res) {
     if (err) {
       res.redirect('/users');
     } else {
-      User.remove(
-            {
-              id: {
-                $in: user.username
-              }
-            },
-            function(err) {
-              if (err) {
-                console.log(err);
-                return res.redirect('/users');
-              }
-              //  delete the user
-              user.remove();
-              req.flash('success', 'Utilisateur supprimé avec succès !');
-              res.redirect('/users');
-            }
-            );
-     }
+      //  delete the user
+       user.remove();
+       req.flash('success', 'Utilisateur supprimé avec succès !');
+       res.redirect('/users');
+    }
   });
 });
-
 
 function escapeRegex(text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');

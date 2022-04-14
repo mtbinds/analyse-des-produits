@@ -9,13 +9,9 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Asap|Lexend+Giga&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/main.css">
-
-
 </head>
 
 <body>
-
-
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
@@ -34,8 +30,6 @@
                         <% if((currentUser.role ==="admin")) {%>
                             <li class="<%= typeof page !== 'undefined' && page === 'users' ? 'active' : '' %>"><a
                                         href="/users">Utilisateurs</a></li>
-
-
                         <% } %>
                     <% } %>
                 </ul>
@@ -89,14 +83,14 @@
                     <li class="<%= typeof page !== 'undefined' && page === 'register' ? 'active' : '' %>"><a
                             href="/register">Enregistrement</a></li>
 
-                    <% } else { %>
+                    <% }else{ %>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <a href="#" class="btn btn-info btn-lg">
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a href="#" class="btn btn-info btn">
                                         <span class="glyphicon glyphicon-user"> <%= currentUser.username %></span>
                                     </a>
                                 </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <div class="dropdown-menu"  aria-labelledby="dropdownMenuButton">
                                     <li><a href="/users/profile/<%= currentUser.id%>" class="glyphicon glyphicon-user" > Profil </a></li>
                                     <li><a href="/logout" class="glyphicon">&#xe017; Déconnexion</a></li>
 
@@ -107,7 +101,6 @@
             </div>
         </div>
     </nav>
-
     <div class="container">
         <% if(error && error.length > 0) { %>
         <div class="alert alert-danger" role="alert">

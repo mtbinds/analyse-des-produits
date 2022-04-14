@@ -6,7 +6,7 @@
     <div style="width: 30%; margin: 20px auto;">
         <form action="/produits/<%=produit._id%>/?_method=PUT" method="POST" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="name">Nom</label>
+                <label for="name">Intitulé</label>
                 <input class="form-control" type="text"  name="name" value="<%=produit.name%>" required>
             </div>
             <div class="form-group">
@@ -42,24 +42,68 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="status">Statut de traitement</label>
-                <div class="form-check-inline">
-                    <label for="status">Non traité</label>
-                    <input class="form-check-input" type="radio" name="status"  checked="" value="Non traité">
-                    <label for="status">En traitement</label>
-                    <input class="form-check-input" type="radio" name="status" value="En traitement">
-                    <label for="status">Traité</label>
-                    <input class="form-check-input" type="radio" name="status" value="Traité">
+                <label for="status">Statut de traitement</label><br>
 
+                <a class="btn btn-success btn-xs" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample1"> Dérouler <span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                </a>
+                <br>
+                <p></p>
+                <div class="collapse" id="collapseExample1">
+                  <ul>
+                    <li>
+                    <label for="status">Non traité</label>
+                    <% if(produit.status =="Non traité") {%>
+                      <input class="form-check-input" type="radio" name="status"  checked="" value="Non traité">
+                    <% }else{ %>
+                       <input class="form-check-input" type="radio" name="status"  value="Non traité">
+                    <%}%>
+                    </li>
+                    <li>
+                    <label for="status">En traitement</label>
+                    <% if(produit.status =="En traitement") {%>
+                       <input class="form-check-input" type="radio" name="status"  checked="" value="En traitement">
+                    <% }else{ %>
+                       <input class="form-check-input" type="radio" name="status"  value="En traitement">
+                    <%}%>
+                    </li>
+                    <li>
+                    <label for="status">Traité</label>
+                    <% if(produit.status =="Traité") {%>
+                        <input class="form-check-input" type="radio" name="status"  checked="" value="Traité">
+                    <% }else{ %>
+                        <input class="form-check-input" type="radio" name="status"  value="Traité">
+                    <%}%>
+                   </li>
+                  </ul>
                 </div>
+
             </div>
             <div class="form-group">
-                <label for="publication">Statut de publication</label>
-                <div class="form-check-inline">
-                    <label for="publication">Publié</label>
-                    <input class="form-check-input" type="radio" name="publication" checked="" value="Publié">
-                    <label for="publication">Non Publié</label>
-                    <input class="form-check-input" type="radio" name="publication" value="Non Publié">
+                <label for="publication">Statut de publication</label><br>
+                <a class="btn btn-success btn-xs" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2"> Dérouler <span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                </a>
+                <br>
+                <p></p>
+                <div class="collapse" id="collapseExample2">
+                    <ul>
+                        <li>
+                            <label for="publication">Non publié</label>
+                            <% if(produit.publication =="Non publié") {%>
+                                <input class="form-check-input" type="radio" name="publication"  checked="" value="Non publié">
+                            <% }else{ %>
+                                <input class="form-check-input" type="radio" name="publication"  value="Non publié">
+                            <%}%>
+                        </li>
+                        <li>
+                            <label for="publication">Publié</label>
+                            <% if(produit.publication =="Publié") {%>
+                                <input class="form-check-input" type="radio" name="publication"  checked="" value="Publié">
+                            <% }else{ %>
+                                <input class="form-check-input" type="radio" name="publication"  value="Publié">
+                            <%}%>
+                        </li>
+
+                    </ul>
                 </div>
             </div>
             <div class="form-group">
