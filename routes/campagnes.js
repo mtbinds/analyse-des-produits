@@ -68,9 +68,11 @@ router.get('/', function(req, res) {
   var pageNumber = pageQuery ? pageQuery : 1;
 
 
-  if (req.query.search) {
+  if (req.query.search){
 
     Produit.findOne({ imei : req.query.search }, function(err, foundProduit){
+
+    if(req.query.date_begin || req.query.date_begin ){
 
     Campagne.find(
         { $and: [
@@ -100,7 +102,7 @@ router.get('/', function(req, res) {
             if (allCampagnes.length < 1) {
               req.flash(
                 'error',
-                'Aucune campagne de tests correspond à votre recherche, Réessayez svp.'
+                'Aucune analyse correspond à votre recherche, Réessayez svp.'
               );
               return res.redirect('back');
             }
@@ -113,11 +115,98 @@ router.get('/', function(req, res) {
             });
           }
         });
+
       });
 
+    }else{
+
+      Campagne.find(
+        { $and: [
+            {
+              imei: foundProduit.imei
+            }
+          ]})
+        .skip(perPage * pageNumber - perPage)
+        .limit(perPage)
+        .exec(function(err, allCampagnes) {
+          Campagne.count({
+            name: req.query.search
+
+          }).exec(function(err, count) {
+            if (err) {
+              req.flash('error', err.message);
+              res.redirect('back');
+            } else {
+
+              if (allCampagnes.length < 1) {
+                req.flash(
+                  'error',
+                  'Aucune analyse correspond à votre recherche, Réessayez svp.'
+                );
+                return res.redirect('back');
+              }
+
+              res.render('campagnes/index', {
+                campagnes: allCampagnes,
+                current: pageNumber,
+                pages: Math.ceil(count / perPage),
+                search: req.query.search
+              });
+            }
+          });
+        });
+    }
   });
 
-  } else {
+  }else{
+
+    if(req.query.date_begin || req.query.date_begin ){
+
+      Campagne.find(
+        { $and: [
+            {
+              createdAt: {
+                $gte: req.query.date_begin,
+                $lt: req.query.date_end
+              }
+            }
+
+          ]})
+        .skip(perPage * pageNumber - perPage)
+        .limit(perPage)
+        .exec(function(err, allCampagnes) {
+          Campagne.count({
+            createdAt: {
+              $gte: req.query.date_begin,
+              $lt: req.query.date_end
+            }
+          }).exec(function(err, count) {
+            if (err) {
+              req.flash('error', err.message);
+              res.redirect('back');
+            } else {
+
+              if (allCampagnes.length < 1) {
+                req.flash(
+                  'error',
+                  'Aucune analyse correspond à votre recherche, Réessayez svp.'
+                );
+                return res.redirect('back');
+              }
+
+              res.render('campagnes/index', {
+                campagnes: allCampagnes,
+                current: pageNumber,
+                pages: Math.ceil(count / perPage),
+                search: req.query.search
+              });
+            }
+          });
+
+        });
+
+    }else{
+
     // Toutes les campagnes de test à partir de la base de données
     Campagne.find({})
       .skip(perPage * pageNumber - perPage)
@@ -136,8 +225,9 @@ router.get('/', function(req, res) {
           }
         });
       });
-  }
 
+     }
+   }
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +254,7 @@ function getProduits(req,res,next){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// CREATE - Ajouter une nouvelle campagne de tests à la base de données
+// CREATE - Ajouter une nouvelle Analyse à la base de données
 router.post('/', middleware.checkAdminAgent, upload.array("image",10),async (req, res,next)  => {
 
   var imageUrlList = [];

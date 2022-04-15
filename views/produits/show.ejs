@@ -16,7 +16,6 @@
     </div>
 
     <div class="col-md-9">
-
         <% if(produit.image.length ===3){ %>
         <div class="thumbnail" >
             <div id="carousel-example-generic3<%=produit._id%>" class="carousel slide" data-ride="carousel">
@@ -55,6 +54,7 @@
                     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                     <span class="sr-only">Next</span>
                 </a>
+             </div>
             </div>
             <% } %>
 
@@ -91,10 +91,11 @@
                         <span class="sr-only">Next</span>
                     </a>
                 </div>
-                <% } %>
+             </div>
+             <% } %>
 
-                <% if(produit.image.length === 1){ %>
-                <div class="thumbnail" >
+             <% if(produit.image.length === 1){ %>
+             <div class="thumbnail">
                     <div id="carousel-example-generic1<%=produit._id%>" class="carousel slide" data-ride="carousel">
                         <!-- Indicators -->
                         <ol class="carousel-indicators">
@@ -120,9 +121,9 @@
                             <span class="sr-only">Next</span>
                         </a>
                     </div>
-                    <% } %>
-
-
+             </div>
+            <% } %>
+            <div class="thumbnail">
             <div class="caption">
                 <h4 class="pull-right"><a>IMEI : </a> <%= produit.imei %></h4>
                 <h4><a> Intitulé : </a></h4>
@@ -176,12 +177,10 @@
                 <% } %>
                 <% } %>
             </div>
-        </div>
+            </div>
 
-
-        <div class="thumbnail">
+            <div class="thumbnail">
             <div class="caption-full">
-
 
                 <h4> Liste des analyses perçues : </h4>
 
@@ -275,7 +274,6 @@
 
         </div>
         </div>
-
 
         <!-- Review section -->
         <div class="thumbnail">
@@ -665,9 +663,9 @@
             <% } %>
         </div>
     </div>
-</div>
 
-<!-- House Likes Modal -->
+
+<!-- Produit Likes Modal -->
 
 <div id="produitLikes" class="modal fade" role="dialog">
 
@@ -710,5 +708,4 @@
     </div>
   </div>
 </div>
-
 <% include ../partials/footer %>

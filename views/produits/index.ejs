@@ -27,7 +27,6 @@
 </header>
 
 <div class="row text-center" style="display:flex; flex-wrap: wrap">
-
     <% produits.forEach(produit => { %>
     <% if ((produit.publication === "Publié")) { %>
 
@@ -181,7 +180,6 @@
                             <span class="fa fa-star <% if (produit.rating > 4.5) { %> checked <% } %>"></span>
                         <% } %>
 
-                        <h4>----------------------------------------------------</h4>
                         <p></p>
                         <p>
                             <a href="/produits/<%= produit._id %>" class="btn btn-success">Plus d'infos</a>
@@ -248,8 +246,6 @@
                             <span class="fa fa-star <% if (produit.rating > 3.5) { %> checked <% } %>"></span>
                             <span class="fa fa-star <% if (produit.rating > 4.5) { %> checked <% } %>"></span>
                         <% } %>
-
-                        <h4>----------------------------------------------------</h4>
                         <p></p>
                         <p>
                             <a href="/produits/<%= produit._id %>" class="btn btn-success">Plus d'infos</a>
@@ -260,6 +256,49 @@
                 </div>
             <% } %>
 
+        <% if(produit.image.length === 0){ %>
+        <div class="thumbnail">
+            <a style="margin-top:5px;" class="btn btn-primary" data-toggle="collapse" href="#collapseExample1<%=produit._id%>" role="button" aria-expanded="false" aria-controls="collapseExample">Apperçu du produit  <span class="glyphicon glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+            </a>
+            <br>
+            <p></p>
+            <div class="collapse" id="collapseExample1<%=produit._id%>">
+
+            </div>
+            <div class="caption">
+                <h4> IMEI : <br>
+                    <a><%= produit.imei %></a>
+                </h4>
+                <h4> Intitulé : <br>
+                    <a><%= produit.name %></a>
+                </h4>
+                <!-- Produit Like Rating -->
+                <div>
+                    <span class="badge label-primary"><i class="fas fa-thumbs-up"></i>
+                        <%= produit.likes.length %></span>
+                </div>
+                <p></p>
+                <!-- Produit Star Rating -->
+                <% if (produit.rating === 0) { %>
+                    <p></p>
+                    <h4>Pas d'évaluations encore.</h4>
+                <% } else { %>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star <% if (produit.rating > 1.5) { %> checked <% } %>"></span>
+                    <span class="fa fa-star <% if (produit.rating > 2.5) { %> checked <% } %>"></span>
+                    <span class="fa fa-star <% if (produit.rating > 3.5) { %> checked <% } %>"></span>
+                    <span class="fa fa-star <% if (produit.rating > 4.5) { %> checked <% } %>"></span>
+                <% } %>
+
+                <p></p>
+                <p>
+                    <a href="/produits/<%= produit._id %>" class="btn btn-success">Plus d'infos</a>
+                </p>
+
+            </div>
+
+        </div>
+        <% } %>
 
     </div>
 
