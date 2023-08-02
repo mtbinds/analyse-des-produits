@@ -1,6 +1,10 @@
-<% include ./partials/header %>
+<%- include('./partials/header') -%>
+
 <div class="row">
     <div class="col-md-12">
+
+        <div class="thumbnail">
+
         <form action="/reset/<%= token %>" method="POST">
             <legend>Réinitialiser le mot de passe</legend>
             <div class="form-group">
@@ -16,7 +20,10 @@
                 <button type="submit" class="btn btn-primary">Mettre à jour le mot de passe</button>
             </div>
         </form>
+
+        </div>
+
     </div>
 </div>
 
-<% include ./partials/footer %>
+<%- include('./partials/footer') -%>

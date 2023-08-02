@@ -1,0 +1,145 @@
+<%- include('../partials/header') -%>
+
+<div class="row">
+    <div class="thumbnail" style="width: 50%; margin: 20px auto;">
+
+    <h1 style="text-align:center;">Edition de la borne</h1>
+    <h3 style="text-align:center;"><a> Identifiant </a> <%=terminal._id %></h3>
+
+    <div class="thumbnail">
+    
+        <form action="/terminals/<%=terminal._id%>/?_method=PUT" method="POST" enctype="application/x-www-form-urlencoded">
+            
+            <div class="center">
+                <p></p>
+                <h4><strong>Paramètres de la borne</strong></h4>
+                <p></p>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Adresse</label>
+                <input class="form-control" type="text" name="address" value="<%=terminal.address%>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="print_price">Prix d'une impression</label>
+                <input class="form-control" type="number" name="print_price" value="<%=terminal.print_price%>" step="0.01" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" type="text" name="description"><%=terminal.description%></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Images</label>
+                <input class="form-control" type="file" draggable="true" id="image" name="image" accept="image/*" value="<%=terminal.image%>" multiple>
+            </div>
+
+            <div class="center">
+              <p></p>
+              <h4><strong>Paramètres de l'administrateur</strong></h4>
+              <p></p>
+            </div>
+
+            <div class="form-group">
+              <label for="admin_email">Email d'administrateur</label>
+              <input class="form-control" type="text" name="admin_email" value="<%=terminal.admin_email%>" required>
+            </div>
+        
+            <div class="form-group">
+              <label for="admin_reception_error_email">Texte d'email d'erreur de réception</label>
+              <textarea class="form-control" type="text" name="admin_reception_error_email" required><%=terminal.admin_reception_error_email%></textarea>
+            </div>
+        
+            <div class="form-group">
+              <label for="admin_print_error_email">Texte d'email d'erreur d'impression</label>
+              <textarea class="form-control" type="text" name="admin_print_error_email" required><%=terminal.admin_print_error_email%></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="admin_phone_number">Téléphone de l'administrateur</label>
+              <input class="form-control" type="tel" name="admin_phone_number" value="<%=terminal.admin_phone_number%>" required>
+            </div>
+
+            <div class="form-group">
+              <label for="admin_reception_error_sms">Message SMS en cas d'erreur de réception</label>
+              <textarea class="form-control" type="text" name="admin_reception_error_sms" required><%=terminal.admin_reception_error_sms%></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="admin_print_error_sms">Message SMS en cas d'erreur d'impression</label>
+              <textarea class="form-control" type="text" name="admin_print_error_sms" required><%=terminal.admin_print_error_sms%></textarea>
+            </div>
+
+            <div class="center">
+              <p></p>
+              <h4><strong>Paramètres du client</strong></h4>
+              <p></p>
+            </div>
+      
+            <div class="form-group">
+              <label for="client_print_success_sms">Message SMS en cas de réussite d'impression</label>
+              <textarea class="form-control" type="text" name="client_print_success_sms" required><%=terminal.client_print_success_sms%></textarea>
+            </div>
+      
+            <div class="form-group">
+              <label for="client_print_error_sms">Message SMS en cas d'erreur d'impression</label>
+              <textarea class="form-control" type="text" name="client_print_error_sms" required><%=terminal.client_print_error_sms%></textarea>
+            </div>
+
+            <div class="center">
+                <p></p>
+                <h4><strong>Paramètres du serveur SMTP</strong></h4>
+                <p></p>
+            </div>
+
+            <div class="form-group">
+                <label for="smtp_host">Hôte SMTP</label>
+                <input class="form-control" type="text" name="smtp_host" value="<%=terminal.smtp_host%>" required>
+              </div>
+        
+              <div class="form-group">
+                <label for="smtp_port">Port SMTP</label>
+                <input class="form-control" type="number" name="smtp_port" value="<%=terminal.smtp_port%>" required>
+              </div>
+        
+              <div class="form-group">
+                <label for="smtp_password">Mot de passe </label>
+                <input class="form-control" id="smtp_password" type="password" name="smtp_password" value="<%=terminal.smtp_password%>" required>
+              </div>
+        
+              <input type="checkbox" onclick="Toggle()">
+        
+              <span> Voir le mot de passe</span>
+        
+              <script>
+                
+                // Change the type of input to password or text
+                function Toggle() {
+        
+                  let temp = document.getElementById("smtp_password");
+                             
+                  if (temp.type === "password") {
+                    temp.type = "text";
+                  }else {
+                    temp.type = "password";
+                  }
+                  
+                }
+
+              </script>
+        
+              <p></p>
+              <p></p>  
+
+            <div class="form-group">
+                <button class="btn btn-warning btn-block" type="submit"><span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span> Mise à jour</button>
+            </div>
+        </form>
+        <a href="/terminals">Retour aux bornes</a>
+    </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') -%>

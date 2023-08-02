@@ -18,7 +18,7 @@ body {
 }
 
 #landing-header h2 {
-  color: #ca83f1;
+  color: #d30505;
   font-size: 30px;
   margin-bottom: 3rem;
 }
@@ -54,21 +54,21 @@ body {
 }
 
 .slideshow li:nth-child(1) {
-  background-image: url(https://i.imgur.com/DB4Bp7I.jpg);
+  background-image: url(https://i.imgur.com/9jhwHVK.jpg);
 }
 
 .slideshow li:nth-child(2) {
-  background-image: url(https://i.imgur.com/RvnI0uq.jpg);
+  background-image: url(https://i.imgur.com/clvsF8f.jpg);
   animation-delay: 5s;
 }
 
 .slideshow li:nth-child(3) {
-  background-image: url(https://i.imgur.com/jJo5Tqv.jpg);
+  background-image: url(https://i.imgur.com/YFZPND1.jpg);
   animation-delay: 10s;
 }
 
 .slideshow li:nth-child(4) {
-  background-image: url(https://i.imgur.com/aUvrZow.jpg);
+  background-image: url(https://i.imgur.com/FFf7hpJ.jpg);
   animation-delay: 15s;
 }
 

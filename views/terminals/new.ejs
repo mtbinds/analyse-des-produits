@@ -1,0 +1,143 @@
+<%- include('../partials/header') -%>
+
+<div class="row">
+  <div class ="thumbnail" style="width: 50%; margin: 20px auto;">
+
+    <h1 style="text-align:center;"> Ajouter une nouvelle borne </h1>
+
+  <div class = "thumbnail">  
+  
+    <form action="/terminals" method="POST" enctype="application/x-www-form-urlencoded">
+      
+      <div class="center">
+      <p></p>
+      <h4><strong>Paramètres de la borne</strong></h4>
+      <p></p>
+      </div>
+      
+      <div class="form-group">
+        <label for="address">Adresse</label>
+        <input class="form-control" type="text" name="terminal[address]" placeholder="Adresse de la borne" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="print_price">Prix d'une impression</label>
+        <input class="form-control" type="number" name="terminal[print_price]" step="0.01" min="0" placeholder="Prix d'une seule impression" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" type="text" name="terminal[description]"
+                  placeholder="Description"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="image">Images</label>
+        <input class="form-control" draggable="true" type="file" id="image" name="image" multiple accept="image/*">
+      </div>
+
+      <div class="center">
+        <p></p>
+        <h4><strong>Paramètres de l'administrateur</strong></h4>
+        <p></p>
+      </div>
+
+      <div class="form-group">
+        <label for="admin_email">Email d'administrateur</label>
+        <input class="form-control" type="text" name="terminal[admin_email]" placeholder="Email d'administrateur" required>
+      </div>
+
+      <div class="form-group">
+        <label for="admin_reception_error_email">Texte d'email d'erreur de réception</label>
+        <textarea class="form-control" type="text" name="terminal[admin_reception_error_email]" placeholder="Texte d'email d'erreur de réception" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="admin_print_error_email">Texte d'email d'erreur d'impression</label>
+        <textarea class="form-control" type="text" name="terminal[admin_print_error_email]" placeholder="Texte d'email d'erreur d'impression" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="admin_phone_number">Téléphone de l'administrateur</label>
+        <input class="form-control" type="tel" name="terminal[admin_phone_number]" placeholder="Téléphone de l'administrateur" required>
+      </div>
+
+      <div class="form-group">
+        <label for="admin_reception_error_sms">Message SMS en cas d'erreur de réception</label>
+        <textarea class="form-control" type="text" name="terminal[admin_reception_error_sms]" placeholder="Message SMS en cas d'erreur de réception" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="admin_print_error_sms">Message SMS en cas d'erreur d'impression</label>
+        <textarea class="form-control" type="text" name="terminal[admin_print_error_sms]" placeholder="Message SMS en cas d'erreur d'impression" required></textarea>
+      </div>
+
+      <div class="center">
+        <p></p>
+        <h4><strong>Paramètres du client</strong></h4>
+        <p></p>
+      </div>
+
+      <div class="form-group">
+        <label for="client_print_success_sms">Message SMS en cas de réussite d'impression</label>
+        <textarea class="form-control" type="text" name="terminal[client_print_success_sms]" placeholder="Message SMS en cas de réussite d'impression" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="client_print_error_sms">Message SMS en cas d'erreur d'impression</label>
+        <textarea class="form-control" type="text" name="terminal[client_print_error_sms]" placeholder="Message SMS en cas d'erreur d'impression" required></textarea>
+      </div>
+      
+      <div class="center">
+      <p></p>
+      <h4><strong>Paramètres du serveur SMTP</strong></h4>
+      <p></p>
+      </div>
+
+      <div class="form-group">
+        <label for="smtp_host">Hôte SMTP</label>
+        <input class="form-control" type="text" name="terminal[smtp_host]" placeholder="Texte d'erreur de réception" required>
+      </div>
+
+      <div class="form-group">
+        <label for="smtp_port">Port SMTP</label>
+        <input class="form-control" type="number" name="terminal[smtp_port]" placeholder="Texte d'erreur d'impression" required>
+      </div>
+
+      <div class="form-group">
+        <label for="smtp_password">Mot de passe </label>
+        <input class="form-control" id="smtp_password" type="password" name="terminal[smtp_password]" placeholder="Mot de passe" required>
+      </div>
+
+      <input type="checkbox" onclick="Toggle()">
+
+      <span> Voir le mot de passe</span>
+
+      <script>
+        // Change the type of input to password or text
+        function Toggle() {
+
+          let temp = document.getElementById("smtp_password");
+                     
+          if (temp.type === "password") {
+            temp.type = "text";
+          }else {
+            temp.type = "password";
+          }
+
+        }
+      </script>
+
+      <p></p>
+      <p></p>
+
+      <div class="form-group">
+        <button class="btn-lg btn-primary btn-block">Ajouter</button>
+      </div>
+    </form>
+    <a href="/terminals">Retour aux bornes</a>
+  </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') -%>

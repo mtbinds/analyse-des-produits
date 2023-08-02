@@ -1,0 +1,33 @@
+<%- include('../partials/header') -%>
+
+<div class="row">
+
+  <div class="thumbnail" style="width: 50%; margin: 20px auto;">
+
+    <h1 style="text-align:center;">Ajouter un nouveau client</h1>
+  
+    <div class="thumbnail">
+      
+
+      <form action="/clients" method="POST" enctype="application/x-www-form-urlencoded">
+
+        <div class="form-group">
+          <label for="phone_number">Numéro de téléphone</label>
+          <input class="form-control" type="text" name="client[phone_number]" placeholder="Numéro de téléphone" required>
+        </div>
+
+        <div class="form-group">
+          <button class="btn-lg btn-primary btn-block">Ajouter</button>
+        </div>
+
+      </form>
+
+      <a href="/clients">Retour aux clients</a>
+
+    </div>
+
+  </div>
+
+</div>
+
+<%- include('../partials/footer') -%>

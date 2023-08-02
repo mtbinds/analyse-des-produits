@@ -1,40 +1,78 @@
-<% include partials/header %>
+<%- include('./partials/header') -%>
 
 <div class="row">
+    
+    <div class="thumbnail" style="width: 50%; margin: 25px auto;">
+
     <h1 style="text-align: center">S'enregistrer</h1>
-    <div style="width: 30%; margin: 25px auto;">
-        <form action="/register" method="post" enctype="multipart/form-data">
+
+    <div class="thumbnail">
+
+        <form action="/register" method="post" enctype="application/x-www-form-urlencoded">
+
             <div class="form-group">
                 <label for="username">Nom d'utilisateur</label>
-                <input class="form-control" type="text" name="username" placeholder="jean-arthur">
+                <input class="form-control" type="text" name="username" placeholder="Nom d'utilisateur" required>
             </div>
 
             <div class="form-group">
                 <label for="firstname">Prénom</label>
-                <input class="form-control" type="text" name="firstname" placeholder="Jean">
+                <input class="form-control" type="text" name="firstname" placeholder="Prénom" required>
             </div>
+
             <div class="form-group">
                 <label for="lastname">Nom</label>
-                <input class="form-control" type="text" name="lastname" placeholder="Arthur">
+                <input class="form-control" type="text" name="lastname" placeholder="Nom" required>
             </div>
+
             <div class="form-group">
                 <label for="password">Mot de passe</label>
-                <input class="form-control" type="password" name="password" placeholder="£KHTUI636gsjs">
+                <input class="form-control" id="password" type="password" name="password" required>
             </div>
+
+            <input type="checkbox" onclick="Toggle()">
+
+            <span> Voir le mot de passe</span>
+
+            <script>
+                // Change the type of input to password or text
+                function Toggle() {
+                    let temp = document.getElementById("password");
+                     
+                    if (temp.type === "password") {
+                        temp.type = "text";
+                    }
+                    else {
+                        temp.type = "password";
+                    }
+                }
+            </script>
+
+            <p></p>
+            <p></p>
+
             <div class="form-group">
                 <label for="password">E-mail</label>
-                <input class="form-control" type="email" name="email" placeholder="E-mail">
+                <input class="form-control" type="email" name="email" placeholder="E-mail" required>
             </div>
+
+            <div class="form-group">
+                <label for="phone_number">Téléphone</label>
+                <input class="form-control" type="tel" name="phone_number" placeholder="Téléphone" required>
+            </div>
+
             <div class="form-group">
                 <label for="avatar">Avatar</label>
                 <input class="form-control" type="file" id="avatar" name="avatar" accept="image/*">
             </div>
+
             <div class="form-group">
                 <button class="btn btn-lg btn-primary btn-block">S'enregistrer</button>
             </div>
         </form>
         <a href="/users">Retour</a>
     </div>
+    </div>
 </div>
 
-<% include partials/footer %>
+<%- include('./partials/footer') -%>

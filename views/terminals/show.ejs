@@ -1,0 +1,755 @@
+<%- include('../partials/header') -%>
+
+<div class="row">
+
+  <div class="col-md-3">
+
+    <div class="thumbnail">
+      
+      <div class="thumbnail">
+
+          <div class="center">
+
+            <h3><i class="fas fa-tablet"></i> BORNE</h3>
+      
+          </div> 
+
+      </div>
+
+    </div>  
+    
+    <div class="thumbnail">
+
+    <div class = center>
+
+        <h4>
+          <span class="glyphicon glyphicon glyphicon-envelope" aria-hidden="true"></span>
+          <strong> Contact d'administrateur </strong>
+        </h4>
+
+    </div>
+
+      <div class="list-group">
+        <li class="list-group-item">E-mail  <a href="mailto:<%=terminal.author.id%>"><%=terminal.admin_email %></a></li>
+        <li class="list-group-item">Numéro de téléphone  <a><%=terminal.admin_phone_number %></a></li>
+      </div>
+
+    </div>
+
+    <div class = "thumbnail">
+
+    <div class ="center">
+      
+      <h4>
+        <span class="glyphicon glyphicon glyphicon-stats" aria-hidden="true"></span>
+        <strong> Statistiques </strong>
+      </h4>
+      
+    </div>
+
+    </br>
+    
+    
+    <h4>
+      <span class="glyphicon glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+      <strong> Toutes les commandes </strong>
+    </h4>
+    
+    <div class="list-group">
+      
+        <!-- Total prints -->
+
+        <li class="list-group-item">Nombre total des commandes <a><%= succeeded_prints + failed_prints %></a></li>
+
+        <li class="list-group-item">Nombre des commandes réussies <a><%= succeeded_prints %></a></li>
+
+        <li class="list-group-item">Nombre des commandes échouées <a><%= failed_prints %></a></li>
+
+        <li class="list-group-item">Chiffre d'affaire <a><%= succeeded_prints * terminal.print_price %> €</a></li>
+
+    </div>
+     
+    <!-- Donut de la borne -->
+
+    <canvas id="donutChart" width="400" height="400"></canvas>
+
+    <script>
+
+      var succeeded_commands_percent = ('<%= succeeded_prints %>'/'<%= succeeded_prints + failed_prints %>')*100;
+
+      var failed_commands_percent = ('<%= failed_prints %>'/'<%= succeeded_prints + failed_prints %>')*100;
+
+      const data = {
+        labels: ['Commandes réussies', 'Commandes échouées'],
+        datasets: [{
+          data: [succeeded_commands_percent,failed_commands_percent],
+          backgroundColor: ['#36A2EB', '#FF6384'],
+          hoverBackgroundColor: ['#36A2EB', '#FF6384'],
+        }]
+      };
+
+      const options = {
+        responsive: true,
+        cutoutPercentage: 70,
+        legend: {
+          position: 'bottom',
+        }
+      };
+
+      // Create the donut chart
+      const donutChart = new Chart(document.getElementById('donutChart'), {
+        type: 'doughnut',
+        data: data,
+        options: options
+      });
+
+    </script>
+
+    </br>
+
+
+    <!-- Filtrer pour le camembert -->
+
+    <h4>
+      <span class="glyphicon glyphicon glyphicon-filter" aria-hidden="true"></span>
+      <strong> Filtrer </strong>
+    </h4>
+
+    <form action="/terminals/<%=terminal._id%>" method="GET" class="form-inline">
+
+
+      <div class="thumbnail">
+
+      <div class="form-group">
+
+          <label for="date_begin_filtered" style="margin-right:5px;">De</label>
+          <input class="form-control" type="date" id="date_begin_filtered" name="date_begin_filtered">
+          <p></p>
+          <label for="date_end_filtered" style="margin-right:5px;margin-left:5px;">A</label>
+          <input class="form-control" type="date" id="date_end_filtered" name="date_end_filtered">
+          <p></p> 
+          <div class="form-group">
+            <label for="searchbar_2" style="margin-right:5px;">Identifiant de l'imprimante</label>
+            <input class="searchbar_2" type="text" name="printer_id" placeholder="Identifiant de l'imprimante ..."
+              class="form-control" list="searchPrintersIds">
+
+              <datalist id="searchPrintersIds">
+                <% terminal.printers.forEach(printer => { %>
+                  
+                  <option value="<%= printer._id %>">
+                  
+                <% }) %>
+              </datalist>
+
+          </div>
+          <p></p>
+          <div class="form-group">
+            <label for="searchbar_2" style="margin-right:5px;">Numéro de téléphone du client</label>
+            <input class="searchbar_2" type="text" name="client_phone" placeholder="Numéro de téléphone ..."
+              class="form-control" list="searchClientsTels">
+
+              <datalist id="searchClientsTels">
+
+                <% terminal_all_clients.forEach(client => { %>
+                  
+                  <option value="<%= client.phone_number %>">
+                  
+                <% }) %>
+
+              </datalist>
+
+          </div>
+
+      </div>
+
+
+      <p></p>
+
+      
+      <input type="submit" value = "Chercher" class="btn btn-primary col-sm-pull-left">
+
+      </div>
+
+    </form>
+    </br>
+
+    <% if (succeeded_prints_filtered != 0 || failed_prints_filtered != 0 ) { %>
+
+      <div class="list-group">    
+        
+        <!-- Statistiques filtrées -->
+
+        <li class="list-group-item">Nombre des commandes <a><%= succeeded_prints_filtered + failed_prints_filtered %></a></li>
+        <li class="list-group-item">Nombre des commandes réussies <a><%= succeeded_prints_filtered %></a></li>
+        <li class="list-group-item">Nombre des commandes échouées <a><%= failed_prints_filtered %></a></li>
+        <li class="list-group-item">Chiffre d'affaire <a><%= succeeded_prints_filtered * terminal.print_price %> €</a></li>
+
+      </div>  
+
+      <canvas id="donutChartFiltered" width="400" height="400"></canvas>
+
+      <script>
+
+        var succeeded_commands_percent_filtered = ('<%= succeeded_prints_filtered %>'/'<%= succeeded_prints_filtered + failed_prints_filtered %>')*100;
+
+        var failed_commands_percent_filtered = ('<%= failed_prints_filtered %>'/'<%= succeeded_prints_filtered + failed_prints_filtered %>')*100;
+
+        const data_filtered = {
+          labels: ['Commandes réussies', 'Commandes échouées'],
+          datasets: [{
+            data: [succeeded_commands_percent_filtered,failed_commands_percent_filtered],
+            backgroundColor: ['#36A2EB', '#FF6384'],
+            hoverBackgroundColor: ['#36A2EB', '#FF6384'],
+          }]
+        };
+
+        const options_filtered = {
+          responsive: true,
+          cutoutPercentage: 70,
+          legend: {
+            position: 'bottom',
+          }
+        };
+
+        // Create the donut chart
+        const donutChart_filtered = new Chart(document.getElementById('donutChartFiltered'), {
+          type: 'doughnut',
+          data: data,
+          options: options
+        });
+
+      </script>
+
+
+    <% } %> 
+
+    </br>
+
+
+  </div>
+
+  </div>
+
+  <div class="col-md-9">
+
+    <% for (let i = 0; i < terminal.image.length; i++) { %>
+
+      <div class="thumbnail">
+        <div id="carousel-example-generic<%= i+1 %><%=terminal._id%>" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <% for (let j = 0; j < terminal.image.length; j++) { %>
+              <li data-target="#carousel-example-generic<%= i+1 %><%=terminal._id%>" data-slide-to="<%= j %>"
+                <% if (j === 0) { %>class="active"<% } %>></li>
+            <% } %>
+          </ol>
+
+          <div style="max-height:500px;min-height:500px" class="carousel-inner" role="listbox">
+            <% for (let k = 0; k < terminal.image.length; k++) { %>
+              <div class="item <%= k === 0 ? 'active' : '' %> fixed-height">
+                <img src="<%= terminal.image[k] %>" alt="image <%= k + 1 %>">
+                <div class="carousel-caption"></div>
+              </div>
+            <% } %>
+          </div>
+
+          <a class="left carousel-control" href="#carousel-example-generic<%= i+1 %><%=terminal._id%>" role="button"
+            data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Première</span>
+          </a>
+          <a class="right carousel-control" href="#carousel-example-generic<%= i+1 %><%=terminal._id%>" role="button"
+            data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Dernière</span>
+          </a>
+        </div>
+      </div>
+
+    <% } %>
+
+    <!-- La borne --> 
+
+    <div class="thumbnail">
+        
+      <div class="caption">
+
+        <h4><span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span><strong> Informations sur la borne </strong></h4>
+
+
+        <div class="thumbnail">
+
+        
+            <h4 class="pull-right">Identifiant <a><%= terminal._id %></a></h4>
+            <h4>Adresse <a><%= terminal.address%></a></h4>
+          
+            <hr>
+            
+            <h4>Date d'installation <a><%=terminal.createdAt.toISOString().substr(0, 10)%></a></h4>
+            <p></p>
+            <hr>
+
+            <h4>Statut de la borne <a><%= terminal.status %></a></h4>
+            <p></p>
+
+            <h4>Description de la borne <a><%= terminal.description%></a></h4>
+            <p></p>
+ 
+        </div>
+
+        <hr>
+
+        <!-- imprimantes -->
+        <h4><span class="glyphicon glyphicon glyphicon-print" aria-hidden="true"></span><strong> Imprimantes </strong></h4>
+
+        <div class="thumbnail">
+
+        <a class="btn btn-success pull-right" role="button" data-toggle="collapse" href="#collapseAddPrinter"
+            aria-expanded="false" aria-controls="collapseAddPrinter">
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ajouter une nouvelle imprimante
+        </a>  
+
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapsePrinters"
+            aria-expanded="false" aria-controls="collapsePrinters">
+          <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Dérouler
+        </a>
+
+        <p></p>
+
+        <div class="collapse" id="collapsePrinters">
+
+        <% if (terminal.printers.length > 0) { %>
+          <% terminal.printers.forEach(printer => { %>
+
+            <div class="thumbnail">
+              <h4 class="pull-right"> Identifiant <a><%= printer._id %></a></h4>
+              <h4> Nom <a><%= printer.name %></a></h4>
+
+              <hr>
+
+              <h4> Date d'installation <a><%=printer.createdAt.toISOString().substr(0, 10)%></a></h4>
+              
+              <hr>
+
+              <h4> Statut de l'imprimante <a><%= printer.status %></a></h4>
+              <h4> Nombre d'impressions réussies <a><%= printer.succeeded_prints %></a></h4>
+              <h4> Nombre d'impressions ratées <a><%= printer.failed_prints %></a></h4>
+              <hr>
+
+             
+              <h4><span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span> <strong>Editer l'imprimante</strong></h4>
+              <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseEdit<%= printer._id %>"
+                aria-expanded="false" aria-controls="collapse<%= printer._id %>">
+                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Dérouler
+              </a>
+              
+
+              <div class="collapse" id="collapseEdit<%= printer._id %>">
+                <div class="well" style="border-left: 5px solid #ffbb33; margin-top: 15px;">
+                  <form id="edit-printer-form<%= printer._id %>"
+                    action="/terminals/<%= terminal._id %>/printers/<%= printer._id %>?_method=PUT" method="POST">
+                    <div class="form-group">
+                      <textarea class="form-control" name="printer[name]" placeholder="Nom de l'imprimante..."
+                        form="edit-printer-form<%= printer._id %>" rows="1" cols="70"><%= printer.name %></textarea>
+                    </div>
+                    <div class="center">
+                      <div class="form-group">
+                        <button class="btn btn-warning"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Editer</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="center">
+                <form id="inline" method="POST" action="/terminals/<%= terminal._id %>/printers/<%= printer._id%>?_method=DELETE">
+                  <button class="btn btn-danger"><span class="glyphicon glyphicon glyphicon-trash" aria-hidden="true"></span> Supprimer</button>
+                </form>
+                <p></p>
+                <p></p>
+              </div>  
+            </div>
+          <% }) %>
+        <% } %>
+        </div>
+
+        
+
+          <div class="collapse" id="collapseAddPrinter">
+            <div class="well" style="border-left: 5px solid #00C851;">
+              <% if (!currentUser) { %>
+                <h5>Vous devez être connecté en tant qu'administrateur d'abord pour pouvoir voir ou ajouter des imprimantes
+                  <a href="/login">Cliquez ici SVP </a> pour se connecter page.</h5>
+              <% } %>
+
+              <% if (currentUser) { %>
+                <h4><span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span> Nom de l'imprimante</h4>
+                <form id="add-comment-form" action="/terminals/<%= terminal._id %>/printers" method="POST">
+                  <div class="form-group">
+                    <textarea class="form-control" name="printer[name]" placeholder="Nom de l'imprimante..."
+                      form="add-comment-form" rows="1" cols="70"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <div class="center">
+                      <button class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ajouter</button>
+                    </div>
+                  </div>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        </div>  
+        </br>  
+        
+        <!-- fin imprimantes-->
+        <hr>
+
+        <!-- clients -->
+        <h4><span class="glyphicon glyphicon glyphicon-print" aria-hidden="true"></span><strong> Clients enregistrés sur cette borne </strong></h4>
+        
+        <div class="thumbnail">
+
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseClients"
+              aria-expanded="false" aria-controls="collapseClients">
+              <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Dérouler
+        </a>
+
+        <p></p>
+
+        <div class="collapse" id="collapseClients">
+
+        <div class="thumbnail">
+
+        <% if (terminal_all_clients.length > 0) { %>
+
+          <% terminal_all_clients.forEach(client => { %>
+
+            <div class="thumbnail">
+
+              <h5> Numéro de téléphone <a><%= client.phone_number %></a></h5>
+
+              <h5> Date de première commande <a><%= client.createdAt.toISOString().substr(0, 10) %></a> </h5>
+
+              <h5> Nombre de commandes passées sur cette borne <a><%= client.orders.length %></a></h5>
+
+              <% let client_succeeded_prints = 0; let client_failed_prints = 0;  %>
+              
+              <% client.orders.forEach(order => {
+
+                 if(order.succeeded == true){
+
+                  client_succeeded_prints += 1;
+
+                 }
+
+                 if(order.succeeded == false){ 
+
+                  client_failed_prints += 1;
+
+                 }
+
+              }) %>
+
+              <h5> Nombre de commandes réussies sur cette borne <a><%= client_succeeded_prints %></a></h5>
+
+              <h5> Nombre de commandes échouées sur cette borne <a><%= client_failed_prints %></a></h5>
+
+              
+            </div>
+
+          <% }) %>
+        <% } %>
+
+        </div>
+        </div>
+
+
+        <!-- Filtration de clients -->
+        
+        <h4>
+          <span class="glyphicon glyphicon glyphicon-filter" aria-hidden="true"></span>
+          <strong> Filtrer </strong>
+        </h4>
+
+        <form action="/terminals/<%=terminal._id%>" method="GET" class="form-inline">
+
+
+          <div class="thumbnail">
+
+          <div class="form-group">
+
+            <label for="date_begin_filtered_clients" style="margin-right:5px;">De</label>
+            <input class="form-control" type="date" id="date_begin_filtered_clients" name="date_begin_filtered_clients">
+            <p></p>
+            <label for="date_end_filtered_clients" style="margin-right:5px;margin-left:5px;">A</label>
+            <input class="form-control" type="date" id="date_end_filtered_clients" name="date_end_filtered_clients">
+            <p></p> 
+
+
+            <p></p>
+            <div class="form-group">
+              <label for="searchbar" style="margin-right:5px;">Numéro de téléphone du client</label>
+              <input class="searchbar" type="text" name="client_phone_clients" placeholder="Numéro de téléphone ..."
+                class="form-control" list="searchClientsTelsOrders">
+
+                <datalist id="searchClientsTelsOrders">
+
+                  <% terminal_all_clients.forEach(client => { %>
+                  
+                    <option value="<%= client.phone_number %>">
+                  
+                  <% }) %>
+
+                </datalist>
+
+              </input>  
+
+            </div>
+
+          </div>
+
+          <p></p>
+
+    
+          <input type="submit" value="Chercher" class="btn btn-primary col-sm-pull-left">
+
+          </div>
+
+        </form>
+
+        <% if (terminal_filtered_clients.length > 0) { %>
+
+          <% terminal_filtered_clients.forEach(client => { %>
+  
+            <div class="thumbnail">
+
+              <h5> Numéro de téléphone <a><%= client.phone_number %></a></h5>
+
+              <h5> Date de première commande <a><%= client.createdAt.toISOString().substr(0, 10) %></a> </h5>
+
+              <h5> Nombre de commandes passées sur cette borne <a><%= client.orders.length %></a></h5>
+
+              <% let client_succeeded_prints = 0; let client_failed_prints = 0;  %>
+              
+              <% client.orders.forEach(order => {
+
+                 if(order.succeeded == true){
+
+                  client_succeeded_prints += 1;
+
+                 }
+
+                 if(order.succeeded == false){ 
+
+                  client_failed_prints += 1;
+
+                 }
+
+              }) %>
+
+              <h5> Nombre de commandes réussies sur cette borne <a><%= client_succeeded_prints %></a></h5>
+
+              <h5> Nombre de commandes échouées sur cette borne <a><%= client_failed_prints %></a></h5>
+
+              
+            </div>
+  
+            <hr>
+  
+            </br>
+        
+          <% }) %>
+        <% } %>
+
+        
+        <!-- fin clients-->
+        </div>
+
+
+        <hr>
+        <!-- commandes -->
+        <h4><span class="glyphicon glyphicon glyphicon-print" aria-hidden="true"></span><strong> Commandes enregistrées sur cette borne </strong></h4>
+        
+        <div class="thumbnail">
+
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseOrders"
+              aria-expanded="false" aria-controls="collapseOrders">
+              <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Dérouler
+        </a>
+
+
+        <div class="collapse" id="collapseOrders">
+
+          <div class="thumbnail">
+  
+          <% if (terminal_all_orders.length > 0) { %>
+  
+            <% terminal_all_orders.forEach(order => { %>
+  
+              <div class="thumbnail">
+  
+                <h5> Identifiant de la borne <a><%= order.terminal %></a></h5>
+
+                <h5> Adresse de la borne <a><%= order.terminal_address %></a></h5>
+
+                <h5> Identifiant de l'imprimante <a><%= order.printer %></a></h5>
+
+                <h5> Nom de l'imprimante <a><%= order.printer_name %></a></h5>
+
+                <h5> Date de commande <a><%= order.createdAt.toISOString().substr(0, 10) %></a> </h5>
+
+                <% if (order.succeeded === true) { %>
+
+                  <h5>Statut de la commande : <a>réussie</a></h5>
+
+                <% }else{ %>
+
+                  <h5>Statut de la commande : <a>échouée</a></h5>
+
+                <% } %>  
+
+
+              </div> 
+
+  
+            <% }) %>
+
+          <% } %>
+  
+          </div>
+  
+        </div>
+
+        <!-- Filtration de commandes -->
+        
+        <h4>
+          <span class="glyphicon glyphicon glyphicon-filter" aria-hidden="true"></span>
+          <strong> Filtrer </strong>
+        </h4>
+
+        <form action="/terminals/<%=terminal._id%>" method="GET" class="form-inline">
+
+
+          <div class="thumbnail">
+
+          <div class="form-group">
+
+            <label for="date_begin_filtered_orders" style="margin-right:5px;">De</label>
+            <input class="form-control" type="date" id="date_begin_filtered_orders" name="date_begin_filtered_orders">
+            <p></p>
+            <label for="date_end_filtered_orders" style="margin-right:5px;margin-left:5px;">A</label>
+            <input class="form-control" type="date" id="date_end_filtered_orders" name="date_end_filtered_orders">
+            <p></p> 
+
+            <div class="form-group">
+              <label for="searchbar" style="margin-right:5px;">Identifiant de l'imprimante</label>
+              <input class="searchbar" type="text" name="printer_id_orders" placeholder="Identifiant de l'imprimante ..."
+                class="form-control" list="searchPrintersIdsOrders">
+
+                <datalist id="searchPrintersIdsOrders">
+                  <% terminal.printers.forEach(printer => { %>
+                  
+                    <option value="<%= printer._id %>">
+                  
+                  <% }) %>
+                </datalist>
+              
+              </input>  
+
+            </div>
+
+            <p></p>
+            <div class="form-group">
+              <label for="searchbar" style="margin-right:5px;">Numéro de téléphone du client</label>
+              <input class="searchbar" type="text" name="client_phone_orders" placeholder="Numéro de téléphone ..."
+                class="form-control" list="searchClientsTelsOrders">
+
+                <datalist id="searchClientsTelsOrders">
+
+                  <% terminal_all_clients.forEach(client => { %>
+                  
+                    <option value="<%= client.phone_number %>">
+                  
+                  <% }) %>
+
+                </datalist>
+
+              </input>  
+
+
+          </div>
+
+          </div>
+
+          <p></p>
+
+    
+          <input type="submit" value="Chercher" class="btn btn-primary col-sm-pull-left">
+
+        </form>
+
+      </div>
+
+      <% if (terminal_filtered_orders.length > 0) { %>
+
+        <% terminal_filtered_orders.forEach(order => { %>
+
+          <div class="thumbnail">
+                
+            <h5>Identifiant de la borne : <a><%= order.terminal %></a></h5>
+
+            <h5>Adresse de la borne : <a><%= order.terminal_address %></a></h5>
+
+            <h5>Identifiant de l'imprimante : <a><%= order.printer %></a></h5>
+
+            <h5>Nom de l'imprimante : <a><%= order.printer_name %></a></h5>
+
+            <h5>Date de commande : <a><%= order.createdAt.toLocaleString() %></a></h5>
+              
+            <% if (order.succeeded === true) { %>
+
+              <h5>Statut de la commande : <a>réussie</a></h5>
+
+            <% }else{ %>
+
+              <h5>Statut de la commande : <a>échouée</a></h5>
+
+            <% } %>  
+
+          </div>
+
+          <hr>
+
+        </br>
+      
+          <% }) %>
+       <% } %>
+ 
+      <!-- Fin de commandes -->
+
+      <hr>
+
+        
+      </div>
+      
+      <!-- Clients ajoutés -->
+      <div class="center">
+        <p><em>Ajoutée par : <a href="/users/profile/<%= terminal.author.id %>"><%= terminal.author.username %></a>,
+            <%= moment(terminal.createdAt).fromNow() %></em></p>
+
+        <% if (typeof(currentUser) !== 'undefined' && (currentUser.role === 'admin' || currentUser.role === 'agent')) { %>
+          <hr>
+          <a class="btn btn-warning" href="/terminals/<%= terminal._id%>/edit"><span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span> Editer</a>
+          <form id="inline" method="POST" action="/terminals/<%= terminal._id%>?_method=DELETE">
+            <button class="btn btn-danger"><span class="glyphicon glyphicon glyphicon-trash" aria-hidden="true"></span> Supprimer</button>
+          </form>
+        <% } %>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<%- include('../partials/footer') -%>

@@ -1,52 +1,41 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
-var app = express();
-var passport = require("passport");
-var LocalStrategy = require("passport-local");
-var User = require("./models/user");
-var methodOverride = require("method-override");
-var flash = require("connect-flash");
-
+const app = express();
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
+const methodOverride = require("method-override");
+const flash = require("connect-flash");
 const port = process.env.PORT || 3000;
 
 // Requiring ROUTES
-var commentRoutes = require("./routes/comments");
-var messageRoutes = require("./routes/messages");
-var replyRoutes = require("./routes/replies");
-var reviewRoutes = require("./routes/reviews");
-var produitRoutes = require("./routes/produits");
-var typeRoutes = require("./routes/types");
-var modeleRoutes = require("./routes/modeles");
-var symptomeRoutes = require("./routes/symptomes");
-var problemeRoutes = require("./routes/problemes");
-var campagneRoutes = require("./routes/campagnes");
-var plantRoutes = require("./routes/plants");
-var testRoutes = require("./routes/tests");
-var userRoutes = require("./routes/users");
-var indexRoutes = require("./routes/index");
 
-/**
-mongoose.connect("mongodb://127.0.0.1:27017/essai", {
-     useNewUrlParser: true });
-**/
+const terminalRoutes = require("./routes/terminals");
+const clientRoutes = require("./routes/clients");
+const printerRoutes = require("./routes/printers");
+const userRoutes = require("./routes/users");
+const indexRoutes = require("./routes/index");
 
-mongoose.connect("mongodb+srv://madjid:Taoualit2016@cluster0.vydqb.mongodb.net/essai?retryWrites=true&w=majority", {
-  useNewUrlParser: true });
+mongoose.connect("mongodb+srv://madjid:Taoualit2016@cluster0.vydqb.mongodb.net/kenwyz_connect?retryWrites=true&w=majority", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true 
+});
 
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 app.set('views', __dirname + '/views');
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(express.json())
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
-app.use(flash()); // flash updates
-// seedDB(); // seed the database
+app.use(flash());
 app.locals.moment = require("moment");
-
 
 // PASSPORT CONFIG
 app.use(require("express-session")({
@@ -71,55 +60,19 @@ app.use((req, res, next) => {
     next();
 });
 
+// ROUTES
+
 app.use("/", indexRoutes);
-
 app.use("/users", userRoutes);
-
-app.use("/produits", produitRoutes);
-app.use("/types", typeRoutes);
-app.use("/modeles", modeleRoutes);
-app.use("/symptomes", symptomeRoutes);
-app.use("/problemes", problemeRoutes);
-app.use("/campagnes", campagneRoutes);
-app.use("/plants", plantRoutes);
-app.use("/tests", testRoutes);
-
-app.use("/produits/:id/type", typeRoutes);
-app.use("/produits/:id/modele", modeleRoutes);
-app.use("/produits/:id/comments", commentRoutes);
-app.use("/produits/:id/messages", messageRoutes);
-app.use("/produits/:id/messages/:id/replies", replyRoutes);
-app.use("/produits/:id/reviews", reviewRoutes);
-
-app.use("/campagnes/:id/produit", produitRoutes);
-app.use("/campagnes/:id/symptomes", campagneRoutes);
-app.use("/campagnes/:id/messages", messageRoutes);
-app.use("/campagnes/:id/messages/:id/replies", replyRoutes);
-
-app.use("/types/:id/messages", messageRoutes);
-app.use("/types/:id/messages/:id/replies", replyRoutes);
-
-app.use("/modeles/:id/messages", messageRoutes);
-app.use("/modeles/:id/messages/:id/replies", replyRoutes);
-
-app.use("/symptomes/:id/messages", messageRoutes);
-app.use("/symptomes/:id/messages/:id/replies", replyRoutes);
-app.use("/symptomes/:id/problemes", problemeRoutes);
-
-app.use("/problemes/:id/messages", messageRoutes);
-app.use("/problemes/:id/messages/:id/replies", replyRoutes);
-app.use("/problemes/:id/plants", plantRoutes);
-
-app.use("/plants/:id/messages", messageRoutes);
-app.use("/plants/:id/messages/:id/replies", replyRoutes);
-app.use("/plants/:id/tests", testRoutes);
-
-app.use("/tests/:id/messages", messageRoutes);
-app.use("/tests/:id/messages/:id/replies", replyRoutes);
-
+app.use("/terminals", terminalRoutes);
+app.use("/terminals/:id/printers", printerRoutes);
+app.use("/clients", clientRoutes);
 app.use("/uploads", express.static("uploads"));
 
+// Error handlers
+app.use((req, res, next) => {
+  res.status(404).send('Page non trouvée.');
+});
+
 // Express listens for requests (Start server)
-app.listen(port, () => console.log(`Site d'analyse des produits starting on port ${port} !`))
-
-
+app.listen(port, () => console.log(`Site de gestion des bornes starting on port ${port}!`));

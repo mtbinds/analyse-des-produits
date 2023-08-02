@@ -1,6 +1,10 @@
-<% include partials/header %>
+<%- include('./partials/header') -%>
+
 <div class="row">
     <div class="col-md-12">
+        
+        <div class="thumbnail" style="width: 50%; margin: 20px auto;">
+        <div class="thumbnail">
         <form action="/forgot" method="POST">
             <legend>Mot de passe oublié</legend>
             <div class="form-group">
@@ -8,10 +12,12 @@
                 <input type="email" name="email" autofocus class="form-control">
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Reset Password">
+                <input type="submit" class="btn btn-primary" value="Mettre à jour">
             </div>
         </form>
+        </div>
+        </div>
     </div>
 </div>
 
-<% include partials/footer %>
+<%- include('./partials/footer') -%>

@@ -1,10 +1,14 @@
-<% include ../partials/header %>
+<%- include('../partials/header') -%>
 
 <div class="row">
+
+    <div class="thumbnail" style="width: 50%; margin: 20px auto;">
+
     <h1 style="text-align:center;">Edition d'utilisateur </h1>
-    <h1 style="text-align:center;">Nom d'utilisateur : <a><%=user.username%></a></h1>
-    <div style="width: 30%; margin: 20px auto;">
-        <form id="edit" action="/users/<%=user._id%>" method="POST" enctype="multipart/form-data">
+    <h1 style="text-align:center;">Nom d'utilisateur <a><%=user.username%></a></h1>
+
+    <div class="thumbnail">
+        <form id="edit" action="/users/<%=user._id%>" method="POST" enctype="application/x-www-form-urlencoded">
 
             <div class="form-group">
                 <label for="avatar">Avatar</label>
@@ -29,8 +33,29 @@
 
             <div class="form-group">
                 <label for="password">Mot de passe</label>
-                <input class="form-control" type="password" value="<%=user.password%>" name="password"  required>
+                <input class="form-control" id="password" type="password" value="<%=user.password%>" name="password" required>
             </div>
+
+            <input type="checkbox" onclick="Toggle()">
+
+            <span> Voir le mot de passe</span>
+
+            <script>
+                // Change the type of input to password or text
+                function Toggle() {
+                    let temp = document.getElementById("password");
+                     
+                    if (temp.type === "password") {
+                        temp.type = "text";
+                    }
+                    else {
+                        temp.type = "password";
+                    }
+                }
+            </script>
+
+            <p></p>
+            <p></p>
 
             <div class="form-group">
                 <label for="email">E-mail</label>
@@ -39,7 +64,7 @@
 
             <div class="form-group">
                 <label for="publication">Rôle</label><br>
-                <a class="btn btn-success btn-xs"  data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2"> Dérouler <span class="glyphicon glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                <a class="btn btn-success btn-xs"  data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2"><span class="glyphicon glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Dérouler
                  </a>
                  <br>
                  <p></p>
@@ -74,11 +99,12 @@
             </div>
             <p></p>
             <div class="form-group">
-                <button class="btn btn-warning btn-block" type="submit" form="edit"> Mise à jour <span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                <button class="btn btn-warning btn-block" type="submit" form="edit"><span class="glyphicon glyphicon glyphicon-edit" aria-hidden="true"></span> Mise à jour</button>
             </div>
         </form>
         <a href="/users">Retour aux utilisateurs</a>
     </div>
+    </div>
 </div>
 
-<% include ../partials/footer %>
+<%- include('../partials/footer') -%>

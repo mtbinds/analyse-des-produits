@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 var passport = require("passport");
 var User = require("../models/user");
-var Produit = require("../models/produit");
+var Terminal = require("../models/terminal");
 var async = require("async");
 var nodemailer = require("nodemailer");
 var crypto = require("crypto");
@@ -18,7 +18,7 @@ var storage = multer.diskStorage({
 var imageFilter = function(req, file, cb) {
   // accepter que des images
   if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
-    return cb(new Error('Que les fichiers image sont autorisés!'), false);
+    return cb(new Error('Que les fichiers de type image sont autorisés !'), false);
   }
   cb(null, true);
 };
@@ -49,15 +49,17 @@ router.get("/register", (req, res) => {
     });
 });
 
-
 router.post("/register",upload.single('avatar'), (req, res) => {
 
   if(req.file){
+
   cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
+
     if (err) {
       req.flash('error', "Téléchargement de l'image est impossible, Réessayez svp.");
       return req.redirect('back');
     }
+
     req.body.avatar = result.secure_url;
     req.body.avatarId = result.public_id;
 
@@ -67,6 +69,7 @@ router.post("/register",upload.single('avatar'), (req, res) => {
       lastname: req.body.lastname,
       role : "utilisateur",
       email: req.body.email,
+      phone_number: req.body.phone_number,
       avatar: req.body.avatar,
       avatarId: req.body.avatarId
     });
@@ -77,12 +80,14 @@ router.post("/register",upload.single('avatar'), (req, res) => {
         return res.redirect("/register");
       }
       passport.authenticate("local")(req, res, function () {
-        req.flash("success", "Bienvenue au site d'analyse des produits " + user.username);
-        res.redirect("/produits");
+        req.flash("success", "Bienvenue au site de gestion de bornes " + user.username);
+        res.redirect("/terminals");
       });
     });
   });
+
   }else{
+
     req.body.avatar = "";
     req.body.avatarId = "";
 
@@ -92,6 +97,7 @@ router.post("/register",upload.single('avatar'), (req, res) => {
       lastname: req.body.lastname,
       role : "utilisateur",
       email: req.body.email,
+      phone_number: req.body.phone_number,
       avatar: req.body.avatar,
       avatarId: req.body.avatarId
     });
@@ -102,8 +108,8 @@ router.post("/register",upload.single('avatar'), (req, res) => {
         return res.redirect("/register");
       }
       passport.authenticate("local")(req, res, function () {
-        req.flash("success", "Bienvenue au site d'analyse des produits " + user.username);
-        res.redirect("/produits");
+        req.flash("success", "Bienvenue au site de gestion de bornes " + user.username);
+        res.redirect("/terminals");
       });
     });
   }
@@ -119,7 +125,7 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", passport.authenticate("local", {
-        successRedirect: "/produits",
+        successRedirect: "/terminals",
         failureRedirect: "/login",
         failureFlash: true
     }),
@@ -127,10 +133,13 @@ router.post("/login", passport.authenticate("local", {
     (req, res) => {});
 
 // LOGOUT ROUTE
-router.get("/logout", (req, res) => {
-    req.logout();
-    req.flash("success", "Déconnecté !");
-    res.redirect("/produits");
+router.get('/logout', function(req, res, next) {
+  req.logout(function(err) {
+    if (err) { 
+      return next(err); 
+      }
+    res.redirect('/');
+  });
 });
 
 // FORGOT PASSWORD
@@ -139,6 +148,7 @@ router.get('/forgot', function (req, res) {
 });
 
 router.post('/forgot', function (req, res, next) {
+
     async.waterfall([
         function (done) {
             crypto.randomBytes(20, function (err, buf) {
@@ -146,6 +156,7 @@ router.post('/forgot', function (req, res, next) {
                 done(err, token);
             });
         },
+
         function (token, done) {
             User.findOne({
                 email: req.body.email
@@ -164,10 +175,12 @@ router.post('/forgot', function (req, res, next) {
             });
         },
 
-
         function (token, user, done) {
+
             var smtpTransport = nodemailer.createTransport({
+
                 service: 'Gmail',
+
                 auth: {
                     user: 'myEmailTesterRequest@gmail.com',//TO DO
                     pass: "Tester99"
@@ -176,7 +189,7 @@ router.post('/forgot', function (req, res, next) {
             var mailOptions = {
                 to: user.email,
                 from: 'myEmailTesterRequest@gmail.com',
-                subject: 'Site des produits Password Reset',
+                subject: 'Site de gestion de bornes Password Reset',
                 text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
                     'http://' + req.headers.host + '/reset/' + token + '\n\n' +
@@ -264,27 +277,33 @@ router.post('/reset/:token', function (req, res) {
             });
         }
     ], function (err) {
-        res.redirect('/produits');
+        res.redirect('/terminals');
     });
 });
 
 // USERS PROFILE
 router.get("/users/profile/:id", (req, res) => {
   User.findById(req.params.id, (err, foundUser) => {
+
     if (err) {
       req.flash("error", "erreur");
       res.redirect("back");
     }
-    Produit.find().where("author.id").equals(foundUser._id).exec((err, produits) => {
+
+    Terminal.find().where("author.id").equals(foundUser._id).exec((err, terminals) => {
+
       if (err) {
         req.flash("error", "erreur");
         return res.redirect("/");
       }
+
       res.render("users/show", {
         user: foundUser,
-        produits: produits
+        terminals: terminals
       });
+
     });
+
   });
 });
 

@@ -2,7 +2,10 @@ var express = require('express');
 var router = express.Router();
 var middleware = require('../middleware');
 var User = require("../models/user");
-var passport = require("passport");
+
+var Terminal = require("../models/printer");
+var Printer = require("../models/printer");
+var Client = require("../models/client");
 
 // Multer/Cloudinary
 var multer = require('multer');
@@ -75,7 +78,9 @@ router.get('/', middleware.checkAdmin ,function(req, res) {
           }
         });
       });
+
   } else {
+
     // Tous les utilisateurs de la base de données
     User.find({})
       .skip(perPage * pageNumber - perPage)
@@ -102,6 +107,7 @@ router.get('/', middleware.checkAdmin ,function(req, res) {
 router.post('/', middleware.checkAdmin , upload.single('avatar'), (req, res) => {
 
   if(req.file){
+
    cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
     if (err) {
       req.flash('error', "Téléchargement de l'image est impossible, Réessayez svp.");
@@ -118,19 +124,24 @@ router.post('/', middleware.checkAdmin , upload.single('avatar'), (req, res) => 
        lastname: req.body.user.lastname,
        role : req.body.user.role,
        email: req.body.user.email,
+       phone_number: req.body.user.phone_number,
        avatar: req.body.user.avatar,
        avatarId: req.body.user.avatarId
      });
 
      User.register(newUser, req.body.user.password, (err, user) => {
+
        if (err) {
          req.flash("error", err.message);
          return res.redirect("/users/new");
        }
+
        res.redirect("/users");
+
      });
 
    });
+
   }else{
 
     req.body.user.avatar = "";
@@ -222,15 +233,78 @@ router.post('/:id', middleware.checkAdmin, upload.single('avatar'), (req, res) =
 
 // DESTROY USERS ROUTE
 router.delete('/:id', middleware.checkAdmin, function(req, res) {
+
   User.findById(req.params.id, function(err, user) {
+
     if (err) {
       res.redirect('/users');
     } else {
-      //  delete the user
+
+      const terminals = Terminal.find();
+      const printers = Printer.find();
+      
+      let verif_terminal = false;
+      let verif_printer = false; 
+
+      if(terminals || printers){
+
+        if (terminals){
+
+            terminals.forEach(terminal => {
+
+              if (terminal.author._id == req.params.id){
+            
+                verif_terminal = true;
+
+              } 
+
+            });
+
+        }
+
+        if (printers){
+
+            printers.forEach(printer => {
+
+              if (printer.author._id == req.params.id){
+          
+                verif_printer = true;
+
+              } 
+
+            });
+        }
+
+      };
+
+      if (verif_terminal || verif_printer){
+
+        if (verif_terminal){
+
+          req.flash('error', 'Veuillez supprimer la borne installée par cet utilisateur !');
+          res.redirect('back');
+
+        }
+
+        if (verif_printer){
+
+          req.flash('error', 'Veuillez supprimer l\'imprimante installée par cet utilisateur !');
+          res.redirect('back');
+
+        }
+
+      }else{
+
+       // Supprimer l'utilisateur
        user.remove();
        req.flash('success', 'Utilisateur supprimé avec succès !');
        res.redirect('/users');
+
+      }
+
+       
     }
+
   });
 });
 

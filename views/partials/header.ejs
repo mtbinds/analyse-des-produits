@@ -4,16 +4,24 @@
 <head>
     <!-- Make site responsive on mobile/tablet -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ANALYSE DES PRODUITS</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <title>GESTIONNAIRE DE BORNES</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Asap|Lexend+Giga&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/main.css">
+    <!-- Chat JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ 
 </head>
 
 <body>
     <nav class="navbar navbar-default">
         <div class="container">
+            <p></p>
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
                     aria-expanded="false" aria-controls="navbar">
@@ -23,9 +31,12 @@
                     <span class="icon-bar"></span>
                 </button>
             </div>
-            <a class="navbar-brand" href="/"><i class="fas fa-search"></i> AP</a>
+           
+            <a class="navbar-brand" href="/"><i class="fas fa-tablet"></i>  Kenwyz Connect</a>
             <div id="navbar" class="collapse navbar-collapse" aria-expanded="false">
+                
                 <ul class="nav navbar-nav">
+                    
                     <% if((typeof (currentUser) !="undefined")) {%>
                         <% if((currentUser.role ==="admin")) {%>
                             <li class="<%= typeof page !== 'undefined' && page === 'users' ? 'active' : '' %>"><a
@@ -33,49 +44,28 @@
                         <% } %>
                     <% } %>
                 </ul>
+                
                 <ul class="nav navbar-nav">
-                    <li class="<%= typeof page !== 'undefined' && page === 'campagnes' ? 'active' : '' %>"><a
-                                href="/campagnes">Analyses</a></li>
-
+                     <% if((typeof (currentUser) !="undefined")) {%>
+                        <% if((currentUser.role ==="admin")) {%>
+                            <li class="<%= typeof page !== 'undefined' && page === 'terminals' ? 'active' : '' %>"><a
+                                        href="/terminals">Bornes</a></li>
+                        <% } %>
+                    <% } %>
                 </ul>
 
                 <ul class="nav navbar-nav">
-                    <li class="<%= typeof page !== 'undefined' && page === 'produits' ? 'active' : '' %>"><a
-                                href="/produits">Produits</a></li>
 
+                    <% if((typeof (currentUser) !="undefined")) {%>
+                        <% if((currentUser.role ==="admin")) {%>
+                            <li class="<%= typeof page !== 'undefined' && page === 'terminals' ? 'active' : '' %>"><a
+                                        href="/clients">Clients</a></li>
+                        <% } %>
+                    <% } %>
+                    
                 </ul>
-                <ul class="nav navbar-nav">
-                    <li class="<%= typeof page !== 'undefined' && page === 'types' ? 'active' : '' %>"><a
-                                href="/types">Types de produits</a></li>
+            
 
-                </ul>
-                <ul class="nav navbar-nav">
-                    <li class="<%= typeof page !== 'undefined' && page === 'modeles' ? 'active' : '' %>"><a
-                                href="/modeles">Modèles de produits</a></li>
-
-                </ul>
-
-                <ul class="nav navbar-nav">
-                    <li class="<%= typeof page !== 'undefined' && page === 'symptomes' ? 'active' : '' %>"><a
-                                href="/symptomes">Symptômes</a></li>
-
-                </ul>
-                <ul class="nav navbar-nav">
-                    <li class="<%= typeof page !== 'undefined' && page === 'problemes' ? 'active' : '' %>"><a
-                                href="/problemes">Problèmes</a></li>
-
-                </ul>
-
-                <ul class="nav navbar-nav">
-                    <li class="<%= typeof page !== 'undefined' && page === 'plants' ? 'active' : '' %>"><a
-                                href="/plants">Plans de tests</a></li>
-
-                </ul>
-                <ul class="nav navbar-nav">
-                    <li class="<%= typeof page !== 'undefined' && page === 'tests' ? 'active' : '' %>"><a
-                                href="/tests">Tests</a></li>
-
-                </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <% if(!currentUser){ %>
                     <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a
@@ -84,19 +74,25 @@
                             href="/register">Enregistrement</a></li>
 
                     <% }else{ %>
-                            <div class="dropdown">
-                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <a href="#" class="btn btn-info btn">
-                                        <span class="glyphicon glyphicon-user"> <%= currentUser.username %></span>
-                                    </a>
-                                </button>
-                                <div class="dropdown-menu"  aria-labelledby="dropdownMenuButton">
-                                    <li><a href="/users/profile/<%= currentUser.id%>" class="glyphicon glyphicon-user" > Profil </a></li>
-                                    <li><a href="/logout" class="glyphicon">&#xe017; Déconnexion</a></li>
 
+                            <div class="dropdown">
+
+                                <button class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    
+                                    <p href="#" class="btn btn-dark btn">
+                                        <span class="glyphicon glyphicon-user">  <%= currentUser.username %></span>
+                                    </p>
+                                                    
+                                </button>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a href="/users/profile/<%= currentUser.id%>" class="glyphicon glyphicon-user"> Profil</a></li>
+                                    <li><a href="/logout" class="glyphicon">&#xe017; Déconnexion</a></li>
                                 </div>
+
                             </div>
                     <% } %>
+
                 </ul>
             </div>
         </div>
